@@ -1,0 +1,21 @@
+services:
+  - type: web
+    name: sabo-store
+    env: docker
+    dockerfilePath: ./Dockerfile
+    plan: free
+    healthCheckPath: /
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: MONGODB_URI
+        fromDatabase:
+          name: sabo-store-db
+          property: connectionString
+      - key: PORT
+        value: 3000
+
+databases:
+  - name: sabo-store-db
+    databaseName: sabo_store
+    plan: free

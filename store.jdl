@@ -1,0 +1,201 @@
+// =======================
+// إعدادات التطبيق
+// =======================
+application {
+  config {
+    baseName storeApp
+    applicationType monolith
+    packageName com.mycompany.store
+    authenticationType jwt
+    databaseType mongodb
+    devDatabaseType mongodb
+    prodDatabaseType mongodb
+    buildTool maven
+    clientFramework vue
+    enableTranslation false
+    nativeLanguage ar
+  }
+}
+
+// =======================
+// الكيانات (Entities)
+// =======================
+
+// الزبون
+entity Customer {
+  fullName String required
+  email String required unique
+  phone String
+  address String
+}
+
+// التصنيفات
+entity Category {
+  name String required unique
+  description String
+}
+
+// المنتجات
+entity Product {
+  name String required
+  description String
+  productCode String required unique
+  quantity Integer required
+  minQuantity Integer required       // حد التنبيه للمخزون
+  costPrice BigDecimal required
+  salePrice BigDecimal required
+  discount BigDecimal
+  profitPercentage BigDecimal
+  active Boolean required
+  createdAt Instant
+  updatedAt Instant
+}
+
+// صور المنتج
+entity ProductImage {
+  imageUrl String required
+  isMain Boolean required
+}
+
+// خيارات المنتج (ألوان / أحجام)
+entity ProductOption {
+  type String required        // COLOR or SIZE
+  value String required       // Red, Blue, XL, L
+}
+
+// العربة
+entity Cart {
+  createdAt Instant required
+  updatedAt Instant
+  status String required      // ACTIVE - CHECKED_OUT
+}
+
+// عناصر العربة
+entity CartItem {
+  quantity Integer required
+  price BigDecimal required
+}
+
+// الطلب
+entity Order {
+  orderDate Instant required
+  status String required
+  totalPrice BigDecimal required
+  deliveryAddress String required
+}
+
+// تفاصيل الطلب
+entity OrderItem {
+  quantity Integer required
+  salePrice BigDecimal required
+  costPrice BigDecimal required
+}
+
+// تتبع الطلب
+entity OrderTracking {
+  status String required
+  note String
+  createdAt Instant required
+}
+
+// المدن
+entity City {
+  name String required unique
+  deliveryPrice BigDecimal required
+  active Boolean required
+}
+
+// شركات التوصيل
+entity DeliveryCompany {
+  name String required
+  phone String
+  apiUrl String
+  apiKey String
+  active Boolean required
+}
+
+// الشحن
+entity Shipment {
+  trackingNumber String
+  shippingPrice BigDecimal
+  estimatedDeliveryDate Instant
+  actualDeliveryDate Instant
+  status String required
+}
+
+// =======================
+// العلاقات (Relationships)
+// =======================
+
+// المنتج - التصنيف
+relationship ManyToOne {
+  Product{category} to Category
+}
+
+// صور المنتج - المنتج
+relationship OneToMany {
+  Product{images} to ProductImage{product}
+}
+
+// خيارات المنتج - المنتج
+relationship ManyToMany {
+  Product{options} to ProductOption{products}
+}
+
+// العربة - الزبون
+relationship OneToOne {
+  Cart{customer} to Customer
+}
+
+// عناصر العربة - العربة
+relationship OneToMany {
+  Cart{items} to CartItem{cart}
+}
+
+// عناصر العربة - المنتج
+relationship ManyToOne {
+  CartItem{product} to Product
+}
+
+// الطلب - الزبون
+relationship ManyToOne {
+  Order{customer} to Customer
+}
+
+// الطلب - المدينة
+relationship ManyToOne {
+  Order{city} to City
+}
+
+// تفاصيل الطلب - الطلب
+relationship OneToMany {
+  Order{items} to OrderItem{order}
+}
+
+// تفاصيل الطلب - المنتج
+relationship ManyToOne {
+  OrderItem{product} to Product
+}
+
+// تتبع الطلب - الطلب
+relationship OneToMany {
+  Order{trackings} to OrderTracking{order}
+}
+
+// الشحن - الطلب
+relationship OneToOne {
+  Shipment{order} to Order
+}
+
+// الشحن - شركة التوصيل
+relationship ManyToOne {
+  Shipment{deliveryCompany} to DeliveryCompany
+}
+
+// =======================
+// الخيارات
+// =======================
+
+paginate * with pagination
+service * with serviceImpl
+dto * with mapstruct

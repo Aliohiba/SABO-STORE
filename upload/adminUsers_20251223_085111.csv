@@ -1,0 +1,2 @@
+id,username,passwordHash,email,name,isActive,lastLogin,createdAt,updatedAt
+1,admin,$2b$10$lStIvh89yxN53I7X1yXGFOWIhTTANsmP0XSaEN5dFTB5eDZCfy85W,admin@sabostore.com,Admin,1,,2025-12-18 13:39:39,2025-12-18 13:39:39
