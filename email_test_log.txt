@@ -1,0 +1,13 @@
+=== اختبار SMTP ===
+Host: ox.libyanspider.io
+Port: 587
+User: sabo@sabo-store.ly
+
+⏳ اختبار الاتصال...
+✅ الاتصال ناجح!
+
+⏳ إرسال بريد تجريبي...
+✅✅✅ تم إرسال البريد بنجاح! ✅✅✅
+Message ID: <7c10f2e8-16a9-347d-da7f-33d4f884ab4f@sabo-store.ly>
+
+يُرجى فحص aliohiba7@gmail.com

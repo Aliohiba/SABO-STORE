@@ -61,7 +61,7 @@ export default function DashboardLayout({
     const saved = localStorage.getItem(SIDEBAR_WIDTH_KEY);
     return saved ? parseInt(saved, 10) : DEFAULT_WIDTH;
   });
-  const { loading, user } = useAuth();
+  const { loading, user } = useAuth({ redirectOnUnauthenticated: true, redirectPath: "/admin/login" });
 
   useEffect(() => {
     localStorage.setItem(SIDEBAR_WIDTH_KEY, sidebarWidth.toString());
@@ -224,9 +224,8 @@ function DashboardLayoutContent({
                               className={`h-10 transition-all font-normal`}
                             >
                               <child.icon
-                                className={`h-4 w-4 ${
-                                  location === child.path ? "text-primary" : ""
-                                }`}
+                                className={`h-4 w-4 ${location === child.path ? "text-primary" : ""
+                                  }`}
                               />
                               <span>{child.label}</span>
                             </SidebarMenuButton>
@@ -277,7 +276,16 @@ function DashboardLayoutContent({
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end" className="w-48">
                 <DropdownMenuItem
-                  onClick={logout}
+                  onClick={async () => {
+                    try {
+                      await logout();
+                      window.location.href = "/";
+                    } catch (error) {
+                      console.error("Logout error:", error);
+                      // Force logout on frontend even if backend fails
+                      window.location.href = "/";
+                    }
+                  }}
                   className="cursor-pointer text-destructive focus:text-destructive"
                 >
                   <LogOut className="mr-2 h-4 w-4" />

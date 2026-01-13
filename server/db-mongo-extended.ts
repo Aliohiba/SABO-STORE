@@ -1,19 +1,24 @@
 import mongoose from "mongoose";
+import { Customer, ICustomer } from "./schemas";
 import {
-  Customer,
   ProductImage,
   ProductOption,
   City,
+  Region,
   DeliveryCompany,
   Shipment,
   OrderTracking,
-  ICustomer,
   IProductImage,
   IProductOption,
   ICity,
+  IRegion,
   IDeliveryCompany,
   IShipment,
   IOrderTracking,
+  IVanexSetting,
+  VanexSetting,
+  IStoreSettings,
+  StoreSettings,
 } from "./schemas-extended";
 
 // ==================== Customer Functions ====================
@@ -123,6 +128,17 @@ export async function deleteCity(id: string): Promise<ICity | null> {
   return City.findByIdAndDelete(id).exec();
 }
 
+// ==================== Region Functions ====================
+export async function createRegion(regionData: Partial<IRegion>): Promise<IRegion> {
+  const region = new Region(regionData);
+  return region.save();
+}
+
+export async function getRegionsByCityId(cityId: string): Promise<IRegion[]> {
+  return Region.find({ cityId: new mongoose.Types.ObjectId(cityId) }).exec();
+}
+
+
 // ==================== DeliveryCompany Functions ====================
 export async function createDeliveryCompany(companyData: Partial<IDeliveryCompany>): Promise<IDeliveryCompany> {
   const company = new DeliveryCompany(companyData);
@@ -204,4 +220,22 @@ export async function updateOrderTracking(id: string, trackingData: Partial<IOrd
 
 export async function deleteOrderTracking(id: string): Promise<IOrderTracking | null> {
   return OrderTracking.findByIdAndDelete(id).exec();
+}
+
+// ==================== VanexSetting Functions ====================
+export async function getVanexSetting(): Promise<IVanexSetting | null> {
+  return VanexSetting.findOne().exec();
+}
+
+export async function updateVanexSetting(data: Partial<IVanexSetting>): Promise<IVanexSetting> {
+  return VanexSetting.findOneAndUpdate({}, data, { new: true, upsert: true }).exec() as Promise<IVanexSetting>;
+}
+
+// ==================== StoreSettings Functions ====================
+export async function getStoreSettings(): Promise<IStoreSettings | null> {
+  return StoreSettings.findOne().exec();
+}
+
+export async function updateStoreSettings(data: Partial<IStoreSettings>): Promise<IStoreSettings> {
+  return StoreSettings.findOneAndUpdate({}, data, { new: true, upsert: true }).exec() as Promise<IStoreSettings>;
 }

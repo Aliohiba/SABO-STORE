@@ -1,0 +1,4140 @@
+openapi: 3.0.0
+info:
+  title: VanEx Logistics System REST API
+  description: |
+    **VanEx Logistics System** - Comprehensive API documentation for Libya's leading logistics platform.
+
+    ## Features
+    - Package management and tracking
+    - Financial transactions and settlements
+    - Money transfer operations
+    - User authentication via Laravel Sanctum
+    - Comprehensive reporting
+    - Multi-language support (Arabic/English)
+
+    ## Authentication
+    This API uses **Laravel Sanctum Bearer token** authentication.
+    Include the token in the Authorization header: `Authorization: Bearer {token}`
+
+    ## Standard Response Format
+    All API endpoints return responses in this consistent JSON structure:
+    ```json
+    {
+      "status_code": 200,
+      "message": "نجحت العملية",
+      "data": {},
+      "errors": null
+    }
+    ```
+
+    ## Error Handling
+    Errors follow the same format with appropriate HTTP status codes:
+    - `400` Bad Request
+    - `401` Unauthorized
+    - `403` Forbidden
+    - `404` Not Found
+    - `422` Validation Error
+    - `500` Internal Server Error
+
+  version: "1.0.0"
+#   termsOfService: https://vanex.ly/terms
+#   contact:
+#     name: VanEx Technical Support
+#     url: https://vanex.ly/support
+#     email: support@vanex.ly
+#   license:
+#     name: Proprietary
+#     url: https://vanex.ly/license
+
+servers:
+  - url: https://app.vanex.ly/api/v1
+    description: Production Server
+  - url: https://test.dev.vanex.ly/api/v1
+    description: Staging/Test Server
+
+security:
+  - sanctum: []
+
+tags:
+  - name: Authentication
+    description: User authentication, registration, and session management
+    externalDocs:
+      description: Laravel Sanctum Documentation
+      url: https://laravel.com/docs/8.x/sanctum
+  - name: Packages
+    description: Package lifecycle management - create, track, update, and deliver
+#   - name: Money Transfers
+#     description: Store money transfer requests and office processing
+  - name: Settlements
+    description: Financial settlements between stores and VanEx
+  - name: Transactions
+    description: Store transaction history and financial records
+  - name: Geography
+    description: Cities, regions, and delivery area management
+  - name: Safe Storage
+    description: Package storage and warehouse services
+  - name: Support
+    description: Customer support tickets and communication
+
+paths:
+  # ========================================
+  # AUTHENTICATION ENDPOINTS
+  # ========================================
+  /authenticate:
+    post:
+      tags: [Authentication]
+      summary: User Login
+      description: |
+        Authenticate user credentials and return Sanctum access token.
+        
+        **Important Notes:**
+        - The `email` field accepts either email address OR phone number
+        - System will automatically detect if input is email or phone
+        - After 5 failed attempts, account will be locked
+        - Requires email or phone verification before first login
+        - Store must be approved for store users
+        - Maximum 5 active tokens per user (oldest will be deleted)
+        
+        **Account Status Checks:**
+        - Store approval status (for store users)
+        - Email/Phone verification status
+        - User active status
+        - Login permissions
+        - Account lock status
+      operationId: authenticateUser
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [email, password]
+              properties:
+                email:
+                  type: string
+                  description: |
+                    User's email address OR phone number.
+                    System automatically detects which one is provided.
+                  example: "apptest@vanex.ly"
+                password:
+                  type: string
+                  format: password
+                  description: User's password (minimum 6 characters)
+                  example: "SecurePassword123"
+                fcm_token:
+                  type: string
+                  nullable: true
+                  description: Firebase Cloud Messaging token for push notifications (optional)
+                  example: "dA1B2C3D4E5F..."
+                device_token:
+                  type: string
+                  nullable: true
+                  description: Device-specific identifier for push notifications (optional)
+                  example: "device_12345"
+                from-web:
+                  type: boolean
+                  nullable: true
+                  description: Flag indicating web-based login (sets cookie if true)
+                  example: false
+            examples:
+              email_login:
+                summary: Login with Email
+                value:
+                  email: "apptest@vanex.ly"
+                  password: "SecurePassword123"
+              phone_login:
+                summary: Login with Phone Number
+                value:
+                  email: "0912345678"
+                  password: "SecurePassword123"
+                  device_token: "device_12345"
+          multipart/form-data:
+            schema:
+              type: object
+              required: [email, password]
+              properties:
+                email:
+                  type: string
+                  description: User's email address OR phone number
+                  example: "apptest@vanex.ly"
+                password:
+                  type: string
+                  format: password
+                  description: User's password
+                  example: "SecurePassword123"
+                fcm_token:
+                  type: string
+                  nullable: true
+                  description: Firebase Cloud Messaging token
+                  example: "dA1B2C3D4E5F..."
+                device_token:
+                  type: string
+                  nullable: true
+                  description: Device-specific identifier
+                  example: "device_12345"
+                from-web:
+                  type: boolean
+                  nullable: true
+                  description: Web-based login flag
+                  example: false
+      responses:
+        "200":
+          description: Authentication successful
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status_code:
+                    type: integer
+                    example: 200
+                  message:
+                    type: string
+                    example: ""
+                  data:
+                    type: object
+                    properties:
+                      status_code:
+                        type: integer
+                        example: 200
+                      message:
+                        type: string
+                        example: "تم تسجيل الدخول"
+                      access_token:
+                        type: string
+                        example: "993548|YSrfPjUHWoMTbDRJPRiOyBamtRBP67qC48QszeF7"
+                      token_type:
+                        type: string
+                        example: "Bearer"
+                      user:
+                        type: object
+                        properties:
+                          id:
+                            type: integer
+                            example: 18943
+                          name:
+                            type: string
+                            example: "APP TEST"
+                          company:
+                            type: integer
+                            example: 13903
+                          email:
+                            type: string
+                            example: "apptest@vanex.ly"
+                          type:
+                            type: integer
+                            example: 1
+                          full_access:
+                            type: integer
+                            example: 0
+                          branch_region:
+                            type: integer
+                            nullable: true
+                            example: null
+                          storage_subscription:
+                            type: integer
+                            example: 1
+                          office_cities:
+                            type: array
+                            items:
+                              type: integer
+                            example:
+                              [42, 200, 500, 823, 1139, 1140, 69, 222, 501, 845]
+                          avatar:
+                            type: string
+                            nullable: true
+                            example: null
+                          store_manager:
+                            type: integer
+                            example: 1
+                          show_packages:
+                            type: integer
+                            example: 1
+                          create_packages:
+                            type: integer
+                            example: 1
+                          edit_packages:
+                            type: integer
+                            example: 1
+                          create_collects:
+                            type: integer
+                            example: 1
+                          edit_collects:
+                            type: integer
+                            example: 1
+                          settelment_collects:
+                            type: integer
+                            example: 1
+                          show_transactions:
+                            type: integer
+                            example: 1
+                          show_reports:
+                            type: integer
+                            example: 1
+                          can_contact:
+                            type: integer
+                            example: 1
+                          handover:
+                            type: integer
+                            example: 1
+                          permissions:
+                            type: array
+                            items:
+                              type: object
+                              properties:
+                                action:
+                                  type: string
+                                  example: "store_manager"
+                                subject:
+                                  type: string
+                                  example: "Auth"
+                          need_regenerate:
+                            type: boolean
+                            example: false
+                      permissions:
+                        type: array
+                        items:
+                          type: object
+                          properties:
+                            action:
+                              type: string
+                              example: "store_manager"
+                            subject:
+                              type: string
+                              example: "Auth"
+                  errors:
+                    type: boolean
+                    example: false
+                  code:
+                    type: string
+                    nullable: true
+                    example: null
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "422":
+          $ref: "#/components/responses/ValidationError"
+
+
+  /register:
+    post:
+      tags: [Authentication]
+      summary: User Registration
+      description: |
+        Register a new user account (individual customers).
+        
+        **Important Notes:**
+        - Either `email` OR `phone` must be provided (at least one required)
+        - Both email and phone must be unique in the system
+        - `branch` field is required (your branch/region)
+        - Password minimum length is 6 characters
+        - After registration, email verification is required
+        - Active OTP will be generated and sent
+        
+        **Registration Flow:**
+        1. User provides registration details
+        2. System creates account with 'active' status
+        3. OTP is generated and sent to email/phone
+        4. User must verify email/phone before first login
+      operationId: registerUser
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [name, password, password_confirmation, branch]
+              properties:
+                name:
+                  type: string
+                  description: Full name of the user
+                  maxLength: 255
+                  example: "محمد أحمد العلي"
+                email:
+                  type: string
+                  format: email
+                  nullable: true
+                  description: |
+                    Unique email address (required if phone is not provided).
+                    Must be unique in the system.
+                  maxLength: 255
+                  example: "mohammed.ali@gmail.com"
+                phone:
+                  type: string
+                  nullable: true
+                  description: |
+                    Mobile phone number (required if email is not provided).
+                    Must be unique in the system.
+                  example: "0912345678"
+                branch:
+                  type: integer
+                  description: Branch/Region ID where user is located (required)
+                  example: 1
+                password:
+                  type: string
+                  format: password
+                  description: User password (minimum 6 characters)
+                  minLength: 6
+                  example: "MyPass123"
+                password_confirmation:
+                  type: string
+                  format: password
+                  description: Password confirmation (must match password field exactly)
+                  example: "MyPass123"
+            examples:
+              email_registration:
+                summary: Register with Email
+                value:
+                  name: "محمد أحمد"
+                  email: "mohammed@example.com"
+                  branch: 1
+                  password: "SecurePass123"
+                  password_confirmation: "SecurePass123"
+              phone_registration:
+                summary: Register with Phone
+                value:
+                  name: "فاطمة علي"
+                  phone: "0912345678"
+                  branch: 2
+                  password: "MyPassword"
+                  password_confirmation: "MyPassword"
+              both_email_and_phone:
+                summary: Register with Both Email and Phone
+                value:
+                  name: "أحمد محمد"
+                  email: "ahmad@example.com"
+                  phone: "0925555555"
+                  branch: 1
+                  password: "Pass123456"
+                  password_confirmation: "Pass123456"
+      responses:
+        "201":
+          description: Registration successful, verification required
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: "#/components/schemas/ApiResponse"
+                  - type: object
+                    properties:
+                      data:
+                        type: object
+                        properties:
+                          user:
+                            $ref: "#/components/schemas/User"
+                          verification_sent:
+                            type: boolean
+                            example: true
+              example:
+                status_code: 201
+                message: "تم التسجيل بنجاح، يرجى التحقق من رمز التفعيل المرسل"
+                data:
+                  user:
+                    id: 123
+                    name: "محمد أحمد العلي"
+                    email: "mohammed.ali@gmail.com"
+                    phone: "0912345678"
+                  verification_sent: true
+                errors: null
+        "422":
+          $ref: "#/components/responses/ValidationError"
+
+  /validate-token:
+    get:
+      tags: [Authentication]
+      summary: Validate Authentication Token
+      description: Validate current Sanctum token and return user data
+      operationId: validateToken
+      security:
+        - sanctum: []
+      responses:
+        "200":
+          description: Token is valid, user authenticated
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: "#/components/schemas/ApiResponse"
+                  - type: object
+                    properties:
+                      data:
+                        allOf:
+                          - $ref: "#/components/schemas/User"
+                          - type: object
+                            properties:
+                              permissions:
+                                type: array
+                                items:
+                                  type: string
+                                example:
+                                  ["create_packages", "view_transactions"]
+              example:
+                status_code: 200
+                message: "الرمز المميز صالح"
+                data:
+                  id: 1
+                  name: "أحمد محمد"
+                  email: "ahmed@store.ly"
+                  permissions: ["create_packages", "view_settlements"]
+                errors: null
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+
+  /logout:
+    get:
+      tags: [Authentication]
+      summary: User Logout
+      description: Logout user and invalidate current token
+      operationId: logoutUser
+      security:
+        - sanctum: []
+      responses:
+        "200":
+          description: Logout successful, token invalidated
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: "#/components/schemas/ApiResponse"
+                  - type: object
+                    properties:
+                      data:
+                        type: object
+                        properties:
+                          logged_out:
+                            type: boolean
+                            example: true
+              example:
+                status_code: 200
+                message: "تم تسجيل الخروج بنجاح"
+                data:
+                  logged_out: true
+                errors: null
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+
+  /verification:
+    post:
+      tags: [Authentication]
+      summary: Account Verification
+      description: Verify account using OTP code sent via SMS
+      operationId: verifyAccount
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [phone, otp_code]
+              properties:
+                phone:
+                  type: string
+                  pattern: "^09[0-9]{8}$"
+                  example: "0912345678"
+                otp_code:
+                  type: string
+                  pattern: "^[0-9]{6}$"
+                  example: "123456"
+      responses:
+        "200":
+          description: Account verified successfully
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: "#/components/schemas/ApiResponse"
+                  - type: object
+                    properties:
+                      data:
+                        type: object
+                        properties:
+                          verified:
+                            type: boolean
+                            example: true
+                          access_token:
+                            type: string
+                            example: "1|abcdef123456..."
+        "422":
+          $ref: "#/components/responses/ValidationError"
+
+  /resend-otp:
+    post:
+      tags: [Authentication]
+      summary: Resend OTP Code
+      description: Resend verification OTP to user's phone
+      operationId: resendOTP
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [phone]
+              properties:
+                phone:
+                  type: string
+                  pattern: "^09[0-9]{8}$"
+                  example: "0912345678"
+      responses:
+        "200":
+          description: OTP resent successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiResponse"
+        "422":
+          $ref: "#/components/responses/ValidationError"
+
+  /password-reset:
+    post:
+      tags: [Authentication]
+      summary: Request Password Reset
+      description: Send password reset link to user's email
+      operationId: requestPasswordReset
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [email]
+              properties:
+                email:
+                  type: string
+                  format: email
+                  example: "user@vanex.ly"
+      responses:
+        "200":
+          description: Reset link sent successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiResponse"
+        "404":
+          $ref: "#/components/responses/NotFound"
+
+  # ========================================
+  # COUPON ENDPOINTS
+  # ========================================
+  /store-coupons/all:
+    get:
+      tags: [Packages]
+      summary: Get Store Coupons
+      description: Retrieve all store coupons with optional filtering
+      operationId: getStoreCoupons
+      security:
+        - sanctum: []
+      parameters:
+        - name: unusedOnly
+          in: query
+          description: Filter unused coupons only
+          schema:
+            type: string
+            example: ""
+        - name: page
+          in: query
+          description: Page number for pagination
+          schema:
+            type: integer
+            example: 1
+        - name: per_page
+          in: query
+          description: Items per page
+          schema:
+            type: integer
+            example: 15
+      responses:
+        "200":
+          description: Store coupons retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiResponse"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+
+  /store-coupons/apply-coupon:
+    post:
+      tags: [Packages]
+      summary: Apply Coupon to Package
+      description: Apply coupon code to a specific package
+      operationId: applyCouponToPackage
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [code, package_id]
+              properties:
+                code:
+                  type: string
+                  description: Coupon code
+                  example: "SAVE10"
+                package_id:
+                  type: integer
+                  description: Package ID to apply coupon
+                  example: 12345
+      responses:
+        "200":
+          description: Coupon applied successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiResponse"
+        "400":
+          description: Invalid coupon or package
+        "422":
+          $ref: "#/components/responses/ValidationError"
+
+  # ========================================
+  # TICKETS/SUPPORT ENDPOINTS
+  # ========================================
+  /tickets:
+    post:
+      tags: [Support]
+      summary: Create Support Ticket
+      description: Create a new support ticket
+      operationId: createSupportTicket
+      security:
+        - sanctum: []
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              required: [title, content, priority, category]
+              properties:
+                title:
+                  type: string
+                  description: Ticket title
+                  example: "Package delivery issue"
+                content:
+                  type: string
+                  description: Ticket description
+                  example: "My package was not delivered on time"
+                priority:
+                  type: string
+                  description: Ticket priority
+                  enum: [low, medium, high, urgent]
+                  example: "medium"
+                category:
+                  type: string
+                  description: Ticket category
+                  example: "delivery"
+                attachment:
+                  type: string
+                  format: binary
+                  description: Optional file attachment
+      responses:
+        "201":
+          description: Ticket created successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiResponse"
+        "422":
+          $ref: "#/components/responses/ValidationError"
+
+    get:
+      tags: [Support]
+      summary: Get Support Tickets
+      description: Retrieve user's support tickets
+      operationId: getSupportTickets
+      security:
+        - sanctum: []
+      parameters:
+        - name: status
+          in: query
+          description: Filter by ticket status
+          schema:
+            type: string
+            enum: [open, in_progress, closed]
+        - name: page
+          in: query
+          description: Page number for pagination
+          schema:
+            type: integer
+            example: 1
+      responses:
+        "200":
+          description: Tickets retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiResponse"
+
+  /customer/tickets/{ticket_id}/rate:
+    post:
+      tags: [Support]
+      summary: Rate Support Ticket
+      description: Rate a support ticket after resolution
+      operationId: rateSupportTicket
+      security:
+        - sanctum: []
+      parameters:
+        - name: ticket_id
+          in: path
+          required: true
+          description: Ticket ID to rate
+          schema:
+            type: integer
+            example: 13903
+        - name: rating
+          in: query
+          required: true
+          description: Rating score (1-5)
+          schema:
+            type: number
+            format: float
+            minimum: 1
+            maximum: 5
+            example: 2.9
+        - name: notes
+          in: query
+          description: Additional notes for the rating
+          schema:
+            type: string
+            example: "test from postman"
+      responses:
+        "200":
+          description: Ticket rated successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiResponse"
+        "404":
+          $ref: "#/components/responses/NotFound"
+
+  # ========================================
+  # SAFE STORAGE ENDPOINTS
+  # ========================================
+  /safe-storage/products:
+    get:
+      tags: [Safe Storage]
+      summary: Get Safe Storage Products
+      description: Retrieve products from safe storage system
+      operationId: getSafeStorageProducts
+      security:
+        - sanctum: []
+      parameters:
+        - name: instock
+          in: query
+          description: Filter by stock availability (0 = false, 1 = true)
+          schema:
+            type: integer
+            enum: [0, 1]
+            example: 1
+      responses:
+        "200":
+          description: Safe storage products retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiResponse"
+
+  /safe-storage/inventory:
+    get:
+      tags: [Safe Storage]
+      summary: Get Safe Storage Inventory
+      description: Retrieve inventory information from safe storage system
+      operationId: getSafeStorageInventory
+      security:
+        - sanctum: []
+      responses:
+        "200":
+          description: Safe storage inventory retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiResponse"
+
+  # ========================================
+  # PUBLIC ENDPOINTS (No Authentication)
+  # ========================================
+  /tracking:
+    get:
+      tags: [Packages]
+      summary: Track Package (Public)
+      description: Track package status using tracking code (no authentication required)
+      operationId: trackPackage
+      parameters:
+        - name: code
+          in: query
+          required: true
+          description: Package tracking code
+          schema:
+            type: string
+            pattern: "^VNX[0-9A-Z]+$"
+            example: "VNX123456"
+      responses:
+        "200":
+          description: Package tracking data retrieved successfully
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: "#/components/schemas/ApiResponse"
+                  - type: object
+                    properties:
+                      data:
+                        $ref: "#/components/schemas/PackageTracking"
+              example:
+                status_code: 200
+                message: "تم العثور على الطرد"
+                data:
+                  code: "VNX123456"
+                  status: "في الطريق"
+                  receiver_name: "أحمد محمد"
+                  current_location: "طرابلس - مركز التوزيع"
+                  estimated_delivery: "2024-10-15"
+                errors: null
+        "404":
+          description: Package not found
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: "#/components/schemas/ApiErrorResponse"
+                  - type: object
+                    example:
+                      status_code: 404
+                      message: "الطرد غير موجود"
+                      data: null
+                      errors:
+                        package: ["الرمز غير صحيح أو الطرد غير موجود"]
+
+  /delivery-calculator:
+    get:
+      tags: [Geography]
+      summary: Delivery Price Calculator
+      description: Calculate delivery price based on destination
+      operationId: calculateDeliveryPrice
+      parameters:
+        - name: from_region
+          in: query
+          description: Source region ID
+          schema:
+            type: integer
+            example: 1
+        - name: to_city
+          in: query
+          required: true
+          description: Destination city ID
+          schema:
+            type: integer
+            example: 5
+        - name: to_sub_city
+          in: query
+          description: Destination sub-city ID
+          schema:
+            type: integer
+            example: 12
+        - name: package_type
+          in: query
+          description: Package type (1=Documents, 2=Goods, etc.)
+          schema:
+            type: integer
+            enum: [1, 2, 3, 4, 5]
+            example: 2
+      responses:
+        "200":
+          description: Delivery price calculated successfully
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: "#/components/schemas/ApiResponse"
+                  - type: object
+                    properties:
+                      data:
+                        type: object
+                        properties:
+                          base_price:
+                            type: number
+                            format: float
+                            example: 15.00
+                          region_price:
+                            type: number
+                            format: float
+                            example: 5.00
+                          total_price:
+                            type: number
+                            format: float
+                            example: 20.00
+                          currency:
+                            type: string
+                            example: "LYD"
+                          delivery_time:
+                            type: string
+                            example: "2-3 أيام عمل"
+
+  /apply-coupon:
+    get:
+      tags: [Packages]
+      summary: Apply Coupon Code
+      description: Check and apply coupon code for discount calculation
+      operationId: applyCoupon
+      parameters:
+        - name: coupon_code
+          in: query
+          required: true
+          description: Coupon code to validate
+          schema:
+            type: string
+            example: "SAVE20"
+        - name: package_value
+          in: query
+          description: Package total value for discount calculation
+          schema:
+            type: number
+            format: float
+            example: 100.00
+      responses:
+        "200":
+          description: Coupon applied successfully
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: "#/components/schemas/ApiResponse"
+                  - type: object
+                    properties:
+                      data:
+                        type: object
+                        properties:
+                          coupon_valid:
+                            type: boolean
+                            example: true
+                          discount_amount:
+                            type: number
+                            format: float
+                            example: 20.00
+                          discount_percentage:
+                            type: number
+                            format: float
+                            example: 20.0
+                          final_amount:
+                            type: number
+                            format: float
+                            example: 80.00
+        "404":
+          description: Invalid coupon code
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiErrorResponse"
+
+  # ========================================
+  # PACKAGE MANAGEMENT ENDPOINTS
+  # ========================================
+  /customer/package:
+    get:
+      tags: [Packages]
+      summary: Get User Packages (v2)
+      description: Retrieve user's packages with enhanced filtering (recommended endpoint)
+      operationId: getUserPackages
+      security:
+        - sanctum: []
+      parameters:
+        - name: status
+          in: query
+          description: Filter by package status
+          schema:
+            type: string
+            enum:
+              [
+                pending,
+                shipped,
+                delivered,
+                returned,
+                cancelled,
+                on_track,
+                enable_delivery,
+              ]
+        - name: per_page
+          in: query
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 50
+            default: 10
+        - name: page
+          in: query
+          schema:
+            type: integer
+            minimum: 1
+            default: 1
+      responses:
+        "200":
+          description: Packages retrieved successfully
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: "#/components/schemas/ApiResponse"
+                  - type: object
+                    properties:
+                      data:
+                        $ref: "#/components/schemas/PaginatedPackages"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+
+    post:
+      tags: [Packages]
+      summary: Create Package (V2 - Recommended)
+      description: |
+        Create a new package with enhanced V2 features (RECOMMENDED ENDPOINT).
+        
+        **V2 Features:**
+        - Type-based conditional validation (4 package types)
+        - Unified city or traditional city selection
+        - Address code system for saved addresses
+        - Partial delivery with item-by-item tracking
+        - Supplies integration
+        - Multi-currency support
+        - Photo upload capability
+        
+        **Package Types:**
+        - Type 1 (Commercial): All fields required
+        - Type 2 (Return/Exchange): Price and paid_by optional
+        - Type 3 (Document): Dimensions optional, sub_type required
+        - Type 4 (Other): Standard validation
+        
+        **Key Differences from V1:**
+        - Uses `commission_by` values: market, customer (NO 'pre')
+        - Uses `extra_size_by` values: market, customer (NO 'pre')
+        - Supports `unified_city` as alternative to `city`
+        - Supports `address_code` for pre-saved addresses
+        - Optional fields become conditional based on `type`
+        
+        **Important Notes:**
+        - Either `city` OR `unified_city` must be provided
+        - If `address_code` provided, recipient fields become optional
+        - Dimensions required for all types except type=3
+        - Price required for all types except type=2
+        - `paid_by` required only for type=1
+      operationId: createPackage
+      security:
+        - sanctum: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreatePackageRequestV2"
+            examples:
+              type1_commercial:
+                summary: Type 1 - Commercial Package
+                value:
+                  type: 1
+                  reciever: "أحمد محمد"
+                  phone: "0912345678"
+                  city: 1
+                  address: "شارع الجمهورية، بناية رقم 123"
+                  price: 200
+                  payment_methode: "cash"
+                  paid_by: "customer"
+                  description: "ملابس رجالية"
+                  qty: 3
+                  height: 30
+                  leangh: 40
+                  width: 25
+                  extra_size_by: "customer"
+                  commission_by: "customer"
+              type2_return:
+                summary: Type 2 - Return Package
+                value:
+                  type: 2
+                  reciever: "فاطمة علي"
+                  phone: "0925555555"
+                  unified_city: 101
+                  address: "حي السلام"
+                  description: "إرجاع منتج"
+                  qty: 1
+                  height: 20
+                  leangh: 30
+                  width: 15
+                  extra_size_by: "market"
+                  commission_by: "market"
+                  payment_methode: "cash"
+              type3_document:
+                summary: Type 3 - Document Package
+                value:
+                  type: 3
+                  sub_type: 1
+                  reciever: "محمد حسن"
+                  phone: "0918888888"
+                  city: 2
+                  address: "المنطقة الصناعية"
+                  price: 0
+                  payment_methode: "epayment"
+                  qty: 1
+                  extra_size_by: "customer"
+                  commission_by: "customer"
+              with_partial_delivery:
+                summary: With Partial Delivery & Products
+                value:
+                  type: 1
+                  reciever: "سارة أحمد"
+                  phone: "0913333333"
+                  city: 1
+                  address: "شارع النصر"
+                  price: 500
+                  payment_methode: "cash"
+                  paid_by: "customer"
+                  description: "منتجات متعددة"
+                  qty: 5
+                  height: 40
+                  leangh: 50
+                  width: 30
+                  extra_size_by: "customer"
+                  commission_by: "customer"
+                  partial_delivery: 1
+                  store_package_products:
+                    - name: "كتاب 1"
+                      price: 50
+                      qty: 2
+                      code: "BOOK001"
+                    - name: "كتاب 2"
+                      price: 75
+                      qty: 3
+                      code: "BOOK002"
+              with_address_code:
+                summary: Using Saved Address Code
+                value:
+                  type: 1
+                  address_code: "ADDR_123"
+                  price: 150
+                  payment_methode: "cash"
+                  paid_by: "customer"
+                  description: "طلب سريع"
+                  qty: 1
+                  height: 20
+                  leangh: 25
+                  width: 15
+                  extra_size_by: "customer"
+                  commission_by: "customer"
+          multipart/form-data:
+            schema:
+              $ref: "#/components/schemas/CreatePackageRequestV2"
+      responses:
+        "201":
+          description: Package created successfully
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: "#/components/schemas/ApiResponse"
+                  - type: object
+                    properties:
+                      data:
+                        $ref: "#/components/schemas/PackageDetails"
+              example:
+                status_code: 201
+                message: "تم إضافة الشحنة بنجاح"
+                data:
+                  id: 2942850
+                  package-code: "H-13903-TIP-5885703"
+                  type: 1
+                  reciever: "أحمد محمد"
+                  phone: "0912345678"
+                  price: 200
+                  total: 215
+                  status: "store_new"
+        "422":
+          description: Validation error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/responses/ValidationError"
+              examples:
+                missing_city:
+                  summary: Missing both city and unified_city
+                  value:
+                    status_code: 422
+                    errors:
+                      city: ["Either city or unified_city must be provided"]
+                invalid_type:
+                  summary: Invalid package type
+                  value:
+                    status_code: 422
+                    errors:
+                      type: ["The selected type is invalid."]
+                missing_sub_type:
+                  summary: Missing sub_type for document package
+                  value:
+                    status_code: 422
+                    errors:
+                      sub_type: ["The sub type field is required when type is 3."]
+                partial_delivery_error:
+                  summary: Partial delivery without products
+                  value:
+                    status_code: 422
+                    errors:
+                      store_package_products: ["The store package products field is required when partial delivery is enabled and products are not provided."]
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+
+  /customer/package/search:
+    post:
+      tags: [Packages]
+      summary: Search Packages
+      description: Search packages by various criteria
+      operationId: searchPackages
+      security:
+        - sanctum: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                search:
+                  type: string
+                  description: Search term (code, receiver name, phone)
+                  example: "VNX123"
+                status:
+                  type: string
+                  example: "shipped"
+                date_from:
+                  type: string
+                  format: date
+                  example: "2024-10-01"
+                date_to:
+                  type: string
+                  format: date
+                  example: "2024-10-31"
+                city_id:
+                  type: integer
+                  example: 1
+      responses:
+        "200":
+          description: Search results retrieved successfully
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: "#/components/schemas/ApiResponse"
+                  - type: object
+                    properties:
+                      data:
+                        type: array
+                        items:
+                          $ref: "#/components/schemas/Package"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+
+  /customer/package/count:
+    get:
+      tags: [Packages]
+      summary: Get Package Counts
+      description: Get count of packages by status
+      operationId: getPackageCounts
+      security:
+        - sanctum: []
+      responses:
+        "200":
+          description: Package counts retrieved successfully
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: "#/components/schemas/ApiResponse"
+                  - type: object
+                    properties:
+                      data:
+                        type: object
+                        properties:
+                          total:
+                            type: integer
+                            example: 150
+                          pending:
+                            type: integer
+                            example: 25
+                          shipped:
+                            type: integer
+                            example: 80
+                          delivered:
+                            type: integer
+                            example: 40
+                          returned:
+                            type: integer
+                            example: 5
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+
+  /customer/package/dashboard:
+    get:
+      tags: [Packages]
+      summary: Package Dashboard
+      description: Get dashboard statistics and recent packages
+      operationId: getPackageDashboard
+      security:
+        - sanctum: []
+      responses:
+        "200":
+          description: Dashboard data retrieved successfully
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: "#/components/schemas/ApiResponse"
+                  - type: object
+                    properties:
+                      data:
+                        $ref: "#/components/schemas/PackageDashboard"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+
+  /customer/package/types:
+    get:
+      tags: [Packages]
+      summary: Get Package Types
+      description: Get available package types and subtypes
+      operationId: getPackageTypes
+      security:
+        - sanctum: []
+      responses:
+        "200":
+          description: Package types retrieved successfully
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: "#/components/schemas/ApiResponse"
+                  - type: object
+                    properties:
+                      data:
+                        type: array
+                        items:
+                          $ref: "#/components/schemas/PackageType"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+
+  /customer/package/statuses:
+    get:
+      tags: [Packages]
+      summary: Get Package Statuses
+      description: Get all available package statuses
+      operationId: getPackageStatuses
+      security:
+        - sanctum: []
+      responses:
+        "200":
+          description: Package statuses retrieved successfully
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: "#/components/schemas/ApiResponse"
+                  - type: object
+                    properties:
+                      data:
+                        type: array
+                        items:
+                          $ref: "#/components/schemas/PackageStatus"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+
+  /customer/package/{id}:
+    get:
+      tags: [Packages]
+      summary: Get Package Details
+      description: Get detailed information about a specific package
+      operationId: getPackageDetails
+      security:
+        - sanctum: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: Package ID or tracking code
+          schema:
+            oneOf:
+              - type: integer
+                example: 12345
+              - type: string
+                pattern: "^VNX[0-9A-Z]+$"
+                example: "VNX123456"
+      responses:
+        "200":
+          description: Package details retrieved successfully
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: "#/components/schemas/ApiResponse"
+                  - type: object
+                    properties:
+                      data:
+                        $ref: "#/components/schemas/PackageDetails"
+        "404":
+          $ref: "#/components/responses/NotFound"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+
+    put:
+      tags: [Packages]
+      summary: Update Package
+      description: Update package information (only if not shipped yet)
+      operationId: updatePackage
+      security:
+        - sanctum: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: Package ID
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                receiver_name:
+                  type: string
+                  example: "أحمد محمد الجديد"
+                phone:
+                  type: string
+                  pattern: "^09[0-9]{8}$"
+                  example: "0912345678"
+                phone_b:
+                  type: string
+                  example: "0922345678"
+                address:
+                  type: string
+                  example: "العنوان المحدث"
+                city_id:
+                  type: integer
+                sub_city_id:
+                  type: integer
+                notes:
+                  type: string
+                  example: "ملاحظات محدثة"
+                price:
+                  type: number
+                  format: float
+                  example: 175.50
+      responses:
+        "200":
+          description: Package updated successfully
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: "#/components/schemas/ApiResponse"
+                  - type: object
+                    properties:
+                      data:
+                        $ref: "#/components/schemas/Package"
+        "422":
+          $ref: "#/components/responses/ValidationError"
+        "400":
+          description: Package cannot be updated
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: "#/components/schemas/ApiErrorResponse"
+                  - type: object
+                    example:
+                      status_code: 400
+                      message: "لا يمكن تعديل الطرد بعد الشحن"
+                      errors:
+                        package: ["الطرد قيد المعالجة ولا يمكن تعديله"]
+        "404":
+          $ref: "#/components/responses/NotFound"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+
+    delete:
+      tags: [Packages]
+      summary: Cancel Package
+      description: Cancel package (only if not shipped yet)
+      operationId: cancelPackage
+      security:
+        - sanctum: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: Package ID
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Package cancelled successfully
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: "#/components/schemas/ApiResponse"
+                  - type: object
+                    properties:
+                      data:
+                        type: object
+                        properties:
+                          cancelled:
+                            type: boolean
+                            example: true
+                          cancelled_at:
+                            type: string
+                            format: date-time
+              example:
+                status_code: 200
+                message: "تم إلغاء الطرد بنجاح"
+                data:
+                  cancelled: true
+                  cancelled_at: "2024-10-02T14:30:00Z"
+                errors: null
+        "400":
+          description: Package cannot be cancelled
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiErrorResponse"
+        "404":
+          $ref: "#/components/responses/NotFound"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+
+  /customer/package/{code}/logs:
+    get:
+      tags: [Packages]
+      summary: Get Package Tracking Logs
+      description: Get detailed tracking history for a package
+      operationId: getPackageLogs
+      security:
+        - sanctum: []
+      parameters:
+        - name: code
+          in: path
+          required: true
+          description: Package tracking code
+          schema:
+            type: string
+            pattern: "^VNX[0-9A-Z]+$"
+            example: "VNX123456"
+      responses:
+        "200":
+          description: Package tracking logs retrieved successfully
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: "#/components/schemas/ApiResponse"
+                  - type: object
+                    properties:
+                      data:
+                        type: array
+                        items:
+                          $ref: "#/components/schemas/PackageLog"
+              example:
+                status_code: 200
+                message: "تم استرداد سجل الطرد بنجاح"
+                data:
+                  - id: 1
+                    status: "created"
+                    status_ar: "تم الإنشاء"
+                    description: "تم إنشاء الطرد بنجاح"
+                    location: "مركز طرابلس"
+                    created_at: "2024-10-01T10:00:00Z"
+                  - id: 2
+                    status: "shipped"
+                    status_ar: "تم الشحن"
+                    description: "تم شحن الطرد"
+                    location: "مستودع النقل"
+                    created_at: "2024-10-02T08:30:00Z"
+                errors: null
+        "404":
+          $ref: "#/components/responses/NotFound"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+
+  /customer/package/{code}/check:
+    get:
+      tags: [Packages]
+      summary: Check Package Status
+      description: Quick status check for a package
+      operationId: checkPackageStatus
+      security:
+        - sanctum: []
+      parameters:
+        - name: code
+          in: path
+          required: true
+          description: Package tracking code
+          schema:
+            type: string
+            pattern: "^VNX[0-9A-Z]+$"
+            example: "VNX123456"
+      responses:
+        "200":
+          description: Package status retrieved successfully
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: "#/components/schemas/ApiResponse"
+                  - type: object
+                    properties:
+                      data:
+                        type: object
+                        properties:
+                          code:
+                            type: string
+                            example: "VNX123456"
+                          status:
+                            type: string
+                            example: "shipped"
+                          status_ar:
+                            type: string
+                            example: "تم الشحن"
+                          can_be_delivered:
+                            type: boolean
+                            example: true
+                          estimated_delivery:
+                            type: string
+                            format: date
+                            example: "2024-10-05"
+        "404":
+          $ref: "#/components/responses/NotFound"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+
+  /customer/package/{id}/recall:
+    put:
+      tags: [Packages]
+      summary: Recall Package
+      description: Request to recall/return a package
+      operationId: recallPackage
+      security:
+        - sanctum: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: Package ID
+          schema:
+            type: integer
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                reason:
+                  type: string
+                  description: Reason for recall
+                  example: "عنوان خاطئ"
+      responses:
+        "200":
+          description: Package recall requested successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiResponse"
+        "400":
+          description: Package cannot be recalled
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiErrorResponse"
+        "404":
+          $ref: "#/components/responses/NotFound"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+
+  /customer/package/{id}/resend:
+    put:
+      tags: [Packages]
+      summary: Resend Package
+      description: Request to resend a returned package
+      operationId: resendPackage
+      security:
+        - sanctum: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: Package ID
+          schema:
+            type: integer
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                new_address:
+                  type: string
+                  description: Updated delivery address
+                  example: "العنوان الجديد المحدث"
+                new_phone:
+                  type: string
+                  pattern: "^09[0-9]{8}$"
+                  example: "0912345678"
+      responses:
+        "200":
+          description: Package resend requested successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiResponse"
+        "400":
+          description: Package cannot be resent
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiErrorResponse"
+        "404":
+          $ref: "#/components/responses/NotFound"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+
+  /customer/package/import:
+    post:
+      tags: [Packages]
+      summary: Import Bulk Packages
+      description: Import multiple packages from Excel/CSV file
+      operationId: importPackages
+      security:
+        - sanctum: []
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              required: [file]
+              properties:
+                file:
+                  type: string
+                  format: binary
+                  description: Excel or CSV file with package data
+                template_type:
+                  type: string
+                  enum: [excel, csv]
+                  default: excel
+      responses:
+        "200":
+          description: Packages imported successfully
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: "#/components/schemas/ApiResponse"
+                  - type: object
+                    properties:
+                      data:
+                        type: object
+                        properties:
+                          imported_count:
+                            type: integer
+                            example: 25
+                          failed_count:
+                            type: integer
+                            example: 2
+                          errors:
+                            type: array
+                            items:
+                              type: object
+                              properties:
+                                row:
+                                  type: integer
+                                message:
+                                  type: string
+        "422":
+          $ref: "#/components/responses/ValidationError"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+
+  /customer/package/export:
+    get:
+      tags: [Packages]
+      summary: Export Packages
+      description: Export user packages to Excel file
+      operationId: exportPackages
+      security:
+        - sanctum: []
+      parameters:
+        - name: status
+          in: query
+          description: Filter by status before export
+          schema:
+            type: string
+        - name: date_from
+          in: query
+          schema:
+            type: string
+            format: date
+        - name: date_to
+          in: query
+          schema:
+            type: string
+            format: date
+        - name: format
+          in: query
+          description: Export format
+          schema:
+            type: string
+            enum: [excel, csv, pdf]
+            default: excel
+      responses:
+        "200":
+          description: Export file generated successfully
+          content:
+            application/vnd.openxmlformats-officedocument.spreadsheetml.sheet:
+              schema:
+                type: string
+                format: binary
+            text/csv:
+              schema:
+                type: string
+                format: binary
+            application/pdf:
+              schema:
+                type: string
+                format: binary
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+
+  # ========================================
+  # MONEY TRANSFER ENDPOINTS
+  # ========================================
+#   /customer/money-transfers:
+#     get:
+#       tags: [Money Transfers]
+#       summary: Get Money Transfers
+#       description: Retrieve money transfers for authenticated store
+#       operationId: getMoneyTransfers
+#       security:
+#         - sanctum: []
+#       parameters:
+#         - name: status
+#           in: query
+#           description: Filter by transfer status
+#           schema:
+#             type: string
+#             enum: [new, pending, approved, rejected, cancelled]
+#             example: "pending"
+#         - name: page
+#           in: query
+#           description: Page number for pagination
+#           schema:
+#             type: integer
+#             minimum: 1
+#             default: 1
+#         - name: per_page
+#           in: query
+#           description: Items per page
+#           schema:
+#             type: integer
+#             minimum: 1
+#             maximum: 50
+#             default: 10
+#       responses:
+#         "200":
+#           description: Money transfers retrieved successfully
+#           content:
+#             application/json:
+#               schema:
+#                 allOf:
+#                   - $ref: "#/components/schemas/ApiResponse"
+#                   - type: object
+#                     properties:
+#                       data:
+#                         type: object
+#                         properties:
+#                           data:
+#                             type: array
+#                             items:
+#                               $ref: "#/components/schemas/MoneyTransfer"
+#                           current_page:
+#                             type: integer
+#                           last_page:
+#                             type: integer
+#                           per_page:
+#                             type: integer
+#                           total:
+#                             type: integer
+#                           from:
+#                             type: integer
+#                           to:
+#                             type: integer
+#               example:
+#                 status_code: 200
+#                 message: "تم استرداد الحوالات المالية بنجاح"
+#                 data:
+#                   data:
+#                     - id: 1
+#                       amount: 1000.00
+#                       status: "pending"
+#                       status_ar: "قيد المراجعة"
+#                       created_at: "2024-10-01T10:00:00Z"
+#                   current_page: 1
+#                   total: 15
+#                 errors: null
+#         "401":
+#           $ref: "#/components/responses/Unauthorized"
+
+#     post:
+#       tags: [Money Transfers]
+#       summary: Create Money Transfer
+#       description: Create new money transfer request
+#       operationId: createMoneyTransfer
+#       security:
+#         - sanctum: []
+#       requestBody:
+#         required: true
+#         content:
+#           application/json:
+#             schema:
+#               type: object
+#               required: [amount, store_settelement_payment_method_id]
+#               properties:
+#                 amount:
+#                   type: number
+#                   format: float
+#                   minimum: 1
+#                   example: 1000.00
+#                   description: Transfer amount (minimum 1 LYD)
+#                 store_settelement_payment_method_id:
+#                   type: integer
+#                   description: Payment method ID from available methods
+#                   example: 1
+#                 store_notes:
+#                   type: string
+#                   description: Optional notes from store
+#                   maxLength: 500
+#                   example: "طلب تحويل عاجل لسداد المستحقات"
+#       responses:
+#         "201":
+#           description: Money transfer created successfully
+#           content:
+#             application/json:
+#               schema:
+#                 allOf:
+#                   - $ref: "#/components/schemas/ApiResponse"
+#                   - type: object
+#                     properties:
+#                       data:
+#                         $ref: "#/components/schemas/MoneyTransfer"
+#               example:
+#                 status_code: 201
+#                 message: "تم إنشاء طلب التحويل بنجاح"
+#                 data:
+#                   id: 123
+#                   amount: 1000.00
+#                   status: "new"
+#                   status_ar: "جديد"
+#                 errors: null
+#         "422":
+#           $ref: "#/components/responses/ValidationError"
+#         "401":
+#           $ref: "#/components/responses/Unauthorized"
+
+#   /customer/money-transfers/{id}/show:
+#     get:
+#       tags: [Money Transfers]
+#       summary: Get Money Transfer Details
+#       description: Get detailed information about specific money transfer
+#       operationId: getMoneyTransferDetails
+#       security:
+#         - sanctum: []
+#       parameters:
+#         - name: id
+#           in: path
+#           required: true
+#           description: Money Transfer ID
+#           schema:
+#             type: integer
+#             example: 123
+#       responses:
+#         "200":
+#           description: Money transfer details retrieved successfully
+#           content:
+#             application/json:
+#               schema:
+#                 allOf:
+#                   - $ref: "#/components/schemas/ApiResponse"
+#                   - type: object
+#                     properties:
+#                       data:
+#                         $ref: "#/components/schemas/MoneyTransferDetails"
+#         "404":
+#           $ref: "#/components/responses/NotFound"
+#         "401":
+#           $ref: "#/components/responses/Unauthorized"
+
+#   /customer/money-transfers/{id}/approve:
+#     put:
+#       tags: [Money Transfers]
+#       summary: Approve Money Transfer Offer
+#       description: Accept money transfer offer from VanEx office
+#       operationId: approveMoneyTransfer
+#       security:
+#         - sanctum: []
+#       parameters:
+#         - name: id
+#           in: path
+#           required: true
+#           description: Money Transfer ID
+#           schema:
+#             type: integer
+#       responses:
+#         "200":
+#           description: Money transfer approved successfully
+#           content:
+#             application/json:
+#               schema:
+#                 allOf:
+#                   - $ref: "#/components/schemas/ApiResponse"
+#                   - type: object
+#                     properties:
+#                       data:
+#                         $ref: "#/components/schemas/MoneyTransfer"
+#         "400":
+#           description: Cannot approve transfer (wrong status)
+#           content:
+#             application/json:
+#               schema:
+#                 $ref: "#/components/schemas/ApiErrorResponse"
+#         "404":
+#           $ref: "#/components/responses/NotFound"
+#         "401":
+#           $ref: "#/components/responses/Unauthorized"
+
+#   /customer/money-transfers/{id}/reject:
+#     put:
+#       tags: [Money Transfers]
+#       summary: Reject Money Transfer Offer
+#       description: Reject money transfer offer from VanEx office
+#       operationId: rejectMoneyTransfer
+#       security:
+#         - sanctum: []
+#       parameters:
+#         - name: id
+#           in: path
+#           required: true
+#           description: Money Transfer ID
+#           schema:
+#             type: integer
+#       responses:
+#         "200":
+#           description: Money transfer rejected successfully
+#           content:
+#             application/json:
+#               schema:
+#                 $ref: "#/components/schemas/ApiResponse"
+#         "400":
+#           description: Cannot reject transfer
+#           content:
+#             application/json:
+#               schema:
+#                 $ref: "#/components/schemas/ApiErrorResponse"
+#         "404":
+#           $ref: "#/components/responses/NotFound"
+#         "401":
+#           $ref: "#/components/responses/Unauthorized"
+
+#   /customer/money-transfers/{id}/resend:
+#     get:
+#       tags: [Money Transfers]
+#       summary: Resend Money Transfer Details
+#       description: Resend transfer details via email/SMS
+#       operationId: resendMoneyTransferDetails
+#       security:
+#         - sanctum: []
+#       parameters:
+#         - name: id
+#           in: path
+#           required: true
+#           schema:
+#             type: integer
+#       responses:
+#         "200":
+#           description: Details resent successfully
+#           content:
+#             application/json:
+#               schema:
+#                 $ref: "#/components/schemas/ApiResponse"
+#         "404":
+#           $ref: "#/components/responses/NotFound"
+#         "401":
+#           $ref: "#/components/responses/Unauthorized"
+
+#   /customer/money-transfers/get-balance:
+#     get:
+#       tags: [Money Transfers]
+#       summary: Get Store Balance
+#       description: Get current store balance available for transfers
+#       operationId: getStoreBalance
+#       security:
+#         - sanctum: []
+#       responses:
+#         "200":
+#           description: Store balance retrieved successfully
+#           content:
+#             application/json:
+#               schema:
+#                 allOf:
+#                   - $ref: "#/components/schemas/ApiResponse"
+#                   - type: object
+#                     properties:
+#                       data:
+#                         type: object
+#                         properties:
+#                           balance:
+#                             type: number
+#                             format: float
+#                             example: 5000.50
+#                           currency:
+#                             type: string
+#                             example: "LYD"
+#                           frozen_amount:
+#                             type: number
+#                             format: float
+#                             description: Amount frozen in pending transfers
+#                             example: 1000.00
+#                           available_balance:
+#                             type: number
+#                             format: float
+#                             description: Available for new transfers
+#                             example: 4000.50
+#               example:
+#                 status_code: 200
+#                 message: "تم استرداد الرصيد بنجاح"
+#                 data:
+#                   balance: 5000.50
+#                   currency: "LYD"
+#                   frozen_amount: 1000.00
+#                   available_balance: 4000.50
+#                 errors: null
+#         "401":
+#           $ref: "#/components/responses/Unauthorized"
+
+  # ========================================
+  # SETTLEMENT ENDPOINTS
+  # ========================================
+  /store/settelmets:
+    get:
+      tags: [Settlements]
+      summary: Get Store Settlements
+      description: Retrieve settlements for authenticated store
+      operationId: getStoreSettlements
+      security:
+        - sanctum: []
+      parameters:
+        - name: status
+          in: query
+          schema:
+            type: string
+            enum: [pending, approved, rejected, paid]
+        - name: page
+          in: query
+          schema:
+            type: integer
+            default: 1
+      responses:
+        "200":
+          description: Settlements retrieved successfully
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: "#/components/schemas/ApiResponse"
+                  - type: object
+                    properties:
+                      data:
+                        $ref: "#/components/schemas/PaginatedSettlements"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+
+  /store/settelmets/{id}/show:
+    get:
+      tags: [Settlements]
+      summary: Get Settlement Details
+      description: Get detailed information about a specific settlement
+      security:
+        - sanctum: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: Settlement ID
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Settlement details retrieved successfully
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: "#/components/schemas/ApiResponse"
+                  - type: object
+                    properties:
+                      data:
+                        $ref: "#/components/schemas/SettlementDetails"
+        "404":
+          $ref: "#/components/responses/NotFound"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+
+  # ========================================
+  # TRANSACTIONS ENDPOINTS
+  # ========================================
+  /store/transactions:
+    get:
+      tags: [Transactions]
+      summary: Get Store Transactions
+      description: Retrieve transaction history for store
+      operationId: getStoreTransactions
+      security:
+        - sanctum: []
+      parameters:
+        - name: type
+          in: query
+          schema:
+            type: string
+            enum: [credit, debit, settlement, money_transfer, package_fee]
+        - name: from_date
+          in: query
+          schema:
+            type: string
+            format: date
+        - name: to_date
+          in: query
+          schema:
+            type: string
+            format: date
+        - name: per_page
+          in: query
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 50
+            default: 10
+      responses:
+        "200":
+          description: Transactions retrieved successfully
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: "#/components/schemas/ApiResponse"
+                  - type: object
+                    properties:
+                      data:
+                        $ref: "#/components/schemas/PaginatedTransactions"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+
+  # Cities and Regions
+  /delivery/price:
+    get:
+      tags: [Cities & Regions]
+      summary: Get Delivery Prices
+      description: Get delivery prices for cities and regions
+      parameters:
+        - name: region_id
+          in: query
+          description: Region ID
+          schema:
+            type: integer
+        - name: city_id
+          in: query
+          description: City ID
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Delivery prices retrieved successfully
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: "#/components/schemas/ApiResponse"
+                  - type: object
+                    properties:
+                      data:
+                        type: array
+                        items:
+                          $ref: "#/components/schemas/DeliveryPrice"
+
+  /city/all:
+    get:
+      tags: [Cities & Regions]
+      summary: Get All Cities
+      description: Get list of all available cities
+      security:
+        - sanctum: []
+      responses:
+        "200":
+          description: Cities retrieved successfully
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: "#/components/schemas/ApiResponse"
+                  - type: object
+                    properties:
+                      data:
+                        type: array
+                        items:
+                          $ref: "#/components/schemas/City"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+
+  # Tracking (Public)
+components:
+  securitySchemes:
+    sanctum:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+      description: Laravel Sanctum Bearer token authentication
+
+  schemas:
+    ApiResponse:
+      type: object
+      properties:
+        status_code:
+          type: integer
+          example: 200
+        message:
+          type: string
+          example: "تمت العملية بنجاح"
+        data:
+          type: object
+        errors:
+          type: object
+          nullable: true
+
+    ApiErrorResponse:
+      type: object
+      properties:
+        status_code:
+          type: integer
+          example: 422
+        message:
+          type: string
+          example: "خطأ في البيانات المدخلة"
+        data:
+          type: object
+          nullable: true
+        errors:
+          type: object
+          example:
+            email: ["البريد الإلكتروني مطلوب"]
+
+    User:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+        name:
+          type: string
+          example: "محمد أحمد"
+        email:
+          type: string
+          format: email
+          example: "user@vanex.ly"
+        phone:
+          type: string
+          example: "0912345678"
+        city_id:
+          type: integer
+          example: 1
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+        store:
+          $ref: "#/components/schemas/Store"
+
+    UserProfile:
+      allOf:
+        - $ref: "#/components/schemas/User"
+        - type: object
+          properties:
+            address:
+              type: string
+              example: "شارع الجمهورية، طرابلس"
+            avatar:
+              type: string
+              nullable: true
+              example: "https://vanex.ly/storage/avatars/user1.jpg"
+            email_verified_at:
+              type: string
+              format: date-time
+              nullable: true
+
+    Store:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+        name:
+          type: string
+          example: "متجر الإلكترونيات المتقدمة"
+        email:
+          type: string
+          format: email
+          example: "store@vanex.ly"
+        phone:
+          type: string
+          example: "0912345678"
+        address:
+          type: string
+          example: "شارع الجمهورية، طرابلس"
+        category:
+          type: string
+          example: "إلكترونيات"
+        balance:
+          type: number
+          format: float
+          example: 5000.50
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+
+    Package:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+        code:
+          type: string
+          example: "VNX123456"
+        receiver_name:
+          type: string
+          example: "أحمد محمد"
+        phone:
+          type: string
+          example: "0912345678"
+        phone_b:
+          type: string
+          nullable: true
+          example: "0922345678"
+        address:
+          type: string
+          example: "شارع الجمهورية، بناية رقم 123"
+        city:
+          $ref: "#/components/schemas/City"
+        sub_city:
+          $ref: "#/components/schemas/SubCity"
+        package_type:
+          $ref: "#/components/schemas/PackageType"
+        description:
+          type: string
+          nullable: true
+          example: "كتب ومواد تعليمية"
+        notes:
+          type: string
+          nullable: true
+          example: "يرجى التعامل بحذر"
+        price:
+          type: number
+          format: float
+          example: 150.50
+        shipping_cost:
+          type: number
+          format: float
+          example: 25.00
+        total_amount:
+          type: number
+          format: float
+          example: 175.50
+        payment_method:
+          type: string
+          enum: [cash, prepaid, cod]
+          example: "cod"
+        status:
+          type: string
+          example: "shipped"
+        status_ar:
+          type: string
+          example: "تم الشحن"
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+        dimensions:
+          type: object
+          properties:
+            length:
+              type: integer
+              example: 30
+            width:
+              type: integer
+              example: 20
+            height:
+              type: integer
+              example: 10
+        weight:
+          type: number
+          format: float
+          example: 2.5
+        fragile:
+          type: boolean
+          example: false
+        urgent:
+          type: boolean
+          example: false
+
+    CreatePackageRequest:
+      type: object
+      required:
+        - reciever
+        - phone
+        - city
+        - address
+        - price
+        - payment_methode
+        - paid_by
+        - description
+        - qty
+        - notes
+        - extra_size_by
+        - commission_by
+        - height
+        - leangh
+        - width
+      properties:
+        reciever:
+          type: string
+          description: Recipient name (note the typo in the actual field name)
+          example: "احمد محمد"
+        phone:
+          type: string
+          description: Recipient phone number
+          example: "0912345678"
+        phone_b:
+          type: string
+          nullable: true
+          description: Secondary phone number (optional)
+          example: "0922345678"
+        city:
+          type: integer
+          description: City ID for delivery destination (must be greater than 0)
+          minimum: 1
+          example: 1
+        address:
+          type: string
+          description: Delivery address (required if sub_city is null)
+          example: "شارع الجمهورية، بناية رقم 123"
+        address_child:
+          type: integer
+          nullable: true
+          description: Sub-city/location ID (required if city is 1, 2, or 4)
+          example: 15
+        sub_city:
+          type: integer
+          nullable: true
+          description: Sub-city ID (used for address validation)
+          example: 0
+        price:
+          type: number
+          format: float
+          description: Package value/price in currency units
+          example: 150.50
+        payment_methode:
+          type: string
+          enum: [cash, cheque, epayment]
+          description: Payment method (note the typo in field name 'methode')
+          example: "cash"
+        paid_by:
+          type: string
+          enum: [market, customer, pre, half]
+          description: |
+            Who pays the shipping cost:
+            - market: Sender pays shipping, deducted from package price
+            - customer: Recipient pays shipping, added to total
+            - pre: Prepaid by sender, no shipping charge to recipient
+            - half: Split payment, half shipping cost to each party
+          example: "customer"
+        description:
+          type: string
+          description: |
+            Package content description.
+            Note: Cannot contain these keywords if deposit=false: قيمه, قيمة, مالية, مالي, ماليه
+          example: "كتب ومواد تعليمية"
+        qty:
+          type: number
+          description: |
+            Quantity of items in package.
+            - Must be 0 if deposit=true
+            - Must be > 0 if deposit=false/null and isReturn=false
+          example: 1
+        notes:
+          type: string
+          description: Special handling notes or instructions
+          example: "يرجى التعامل بحذر"
+        sticker_notes:
+          type: string
+          nullable: true
+          description: Notes to be printed on the package sticker
+          example: "هش - لا يقلب"
+        leangh:
+          type: number
+          description: Package length in cm (note the typo in field name 'leangh'). Extra charges apply if > 35cm
+          example: 30
+        width:
+          type: number
+          description: Package width in cm. Extra charges apply if > 35cm
+          example: 20
+        height:
+          type: number
+          description: Package height in cm. Extra charges apply if > 35cm
+          example: 10
+        extra_size_by:
+          type: string
+          enum: [market, customer, pre]
+          description: |
+            Who pays for extra size charges (calculated when dimensions > 35cm):
+            - market: Deducted from package price
+            - customer: Added to total amount
+            - pre: Prepaid by sender
+          example: "customer"
+        commission_by:
+          type: string
+          enum: [market, customer, pre]
+          description: |
+            Who pays the regional commission (1% for prices >= 1000 in certain regions):
+            - market: Deducted from package price
+            - customer: Added to total amount
+            - pre: Prepaid by sender
+          example: "customer"
+        deposit:
+          type: boolean
+          nullable: true
+          description: |
+            Is this a deposit package (no actual goods).
+            If true, qty must be 0 and description keyword validation is skipped
+          example: false
+        isReturn:
+          type: boolean
+          nullable: true
+          description: Is this a return package
+          default: false
+        store_sub_sender:
+          type: string
+          nullable: true
+          description: Sub-sender identifier for the store (optional)
+          example: null
+
+    CreatePackageRequestV2:
+      type: object
+      description: |
+        V2 Package creation request with enhanced features including:
+        - Type-based conditional validation
+        - Unified city or traditional city selection
+        - Address code system for saved addresses
+        - Partial delivery with item-by-item tracking
+        - Supplies integration
+        - Multi-currency support
+      properties:
+        # PACKAGE TYPE (Controls conditional validation)
+        type:
+          type: integer
+          enum: [1, 2, 3, 4]
+          description: |
+            Package type (controls which fields are required):
+            - 1: Commercial package (all fields required)
+            - 2: Return/Exchange (price optional, paid_by optional)
+            - 3: Document (dimensions optional, sub_type required)
+            - 4: Other type
+          example: 1
+        sub_type:
+          type: integer
+          nullable: true
+          description: Package sub-type (required when type=3)
+          example: null
+        
+        # RECIPIENT INFORMATION (Optional if address_code provided)
+        reciever:
+          type: string
+          description: Recipient name (required unless address_code is provided)
+          example: "أحمد محمد"
+        phone:
+          type: string
+          description: Recipient phone number 10-20 digits (required unless address_code is provided)
+          example: "0912345678"
+        phone_b:
+          type: string
+          nullable: true
+          description: Secondary phone number (optional)
+          example: "0922345678"
+        
+        # ADDRESS SYSTEM (city OR unified_city required)
+        city:
+          type: integer
+          nullable: true
+          description: City ID (required if unified_city not provided)
+          example: 1
+        unified_city:
+          type: integer
+          nullable: true
+          description: Unified city ID (required if city not provided)
+          example: 101
+        address:
+          type: string
+          nullable: true
+          description: |
+            Delivery address (conditional requirement based on city, address_code, and office delivery cities)
+          example: "شارع الجمهورية، بناية رقم 123"
+        address_child:
+          type: integer
+          nullable: true
+          description: Sub-city/location ID (optional)
+          example: 15
+        address_code:
+          type: string
+          nullable: true
+          description: Pre-saved address code (if provided, reciever, phone, address become optional)
+          example: "ADDR_123"
+        map:
+          type: string
+          nullable: true
+          description: GPS coordinates or map link
+          example: "32.8872,13.1913"
+        
+        # PRICING (Conditional based on type)
+        price:
+          type: number
+          format: float
+          description: |
+            Package value/price (required for type 1,3,4; optional for type 2)
+          example: 150.50
+        payment_methode:
+          type: string
+          enum: [cash, cheque, epayment]
+          description: Payment method (always required)
+          example: "cash"
+        paid_by:
+          type: string
+          enum: [market, customer, half]
+          nullable: true
+          description: |
+            Who pays shipping (required only for type=1):
+            - market: Sender pays, deducted from package price
+            - customer: Recipient pays, added to total
+            - half: Split 50/50
+          example: "customer"
+        
+        # PACKAGE DETAILS
+        description:
+          type: string
+          nullable: true
+          description: Package content description (required for type 1 and 2)
+          example: "كتب ومواد تعليمية"
+        qty:
+          type: number
+          description: Quantity of items (required except when type sub_type=3)
+          example: 2
+        qty_return:
+          type: number
+          nullable: true
+          description: Return quantity for exchange packages
+          example: 0
+        price_delivered:
+          type: number
+          nullable: true
+          description: Price upon delivery
+          example: 0
+        notes:
+          type: string
+          nullable: true
+          description: Internal handling notes
+          example: "يرجى التعامل بحذر"
+        sticker_notes:
+          type: string
+          nullable: true
+          description: Notes printed on package sticker
+          example: "هش - لا يقلب"
+        store_reference_id:
+          type: string
+          nullable: true
+          description: Store's internal reference ID
+          example: "REF_2024_001"
+        store_pkg_details:
+          type: string
+          nullable: true
+          description: Additional package details for store
+          example: "Order #12345"
+        store_sub_sender:
+          type: string
+          nullable: true
+          description: Sub-sender identifier
+          example: "BRANCH_A"
+        
+        # DIMENSIONS (Required except for type=3)
+        height:
+          type: number
+          nullable: true
+          description: Package height in cm (required for type 1,2,4; optional for type 3)
+          example: 10
+        leangh:
+          type: number
+          nullable: true
+          description: Package length in cm (required for type 1,2,4; optional for type 3)
+          example: 30
+        width:
+          type: number
+          nullable: true
+          description: Package width in cm (required for type 1,2,4; optional for type 3)
+          example: 20
+        
+        # FEES DISTRIBUTION (Always required)
+        extra_size_by:
+          type: string
+          enum: [market, customer]
+          description: |
+            Who pays extra size charges (for dimensions > 35cm):
+            - market: Deducted from package price
+            - customer: Added to total
+          example: "customer"
+        commission_by:
+          type: string
+          enum: [market, customer]
+          description: |
+            Who pays regional commission:
+            - market: Deducted from package price
+            - customer: Added to total
+          example: "customer"
+        
+        # PARTIAL DELIVERY SYSTEM
+        partial_delivery:
+          type: integer
+          enum: [0, 1]
+          nullable: true
+          description: |
+            Enable partial delivery (deliver items individually):
+            - 0: Standard delivery
+            - 1: Partial delivery enabled
+          example: 0
+        products:
+          type: array
+          nullable: true
+          description: Array of products (used with partial delivery)
+          items:
+            type: object
+            properties:
+              name:
+                type: string
+                example: "كتاب 1"
+              product_code:
+                type: string
+                nullable: true
+                example: "BOOK001"
+              qty:
+                type: integer
+                example: 1
+              quantity:
+                type: integer
+                example: 1
+              unit_price:
+                type: number
+                example: 50
+              image:
+                type: string
+                nullable: true
+                example: "https://example.com/image.jpg"
+        store_package_products:
+          type: array
+          nullable: true
+          description: |
+            Store package products (required if partial_delivery=1 and products is empty).
+            Each item must be unique (distinct names and codes).
+          items:
+            type: object
+            required: [name, price, qty]
+            properties:
+              name:
+                type: string
+                maxLength: 255
+                example: "كتاب 1"
+              price:
+                type: number
+                minimum: 0
+                example: 50
+              qty:
+                type: integer
+                minimum: 1
+                example: 1
+              code:
+                type: string
+                nullable: true
+                maxLength: 255
+                example: "BOOK001"
+              image:
+                type: string
+                format: binary
+                nullable: true
+        are_products_modified:
+          type: integer
+          nullable: true
+          description: Flag indicating if products were modified
+          example: 0
+        
+        # SUPPLIES INTEGRATION
+        selectedSupplies:
+          type: array
+          nullable: true
+          description: Array of supplies to include with package
+          items:
+            type: object
+            required: [id, name, price, quantity]
+            properties:
+              id:
+                type: integer
+                example: 1
+              name:
+                type: string
+                example: "صندوق كرتون كبير"
+              price:
+                type: number
+                example: 5.5
+              quantity:
+                type: integer
+                example: 1
+              image:
+                type: string
+                nullable: true
+                example: "https://example.com/supply.jpg"
+        
+        # MULTI-CURRENCY SUPPORT
+        currency_type_id:
+          type: integer
+          nullable: true
+          description: Currency type ID (required if total_amount > 0)
+          example: 1
+        total_amount:
+          type: number
+          nullable: true
+          description: Total amount in specified currency (required if currency_type_id provided)
+          example: 150.50
+        
+        # PHOTO UPLOAD
+        photo:
+          type: string
+          format: binary
+          nullable: true
+          description: "Package photo for verification (max 4MB, formats: png,jpg,jpeg,gif)"
+        
+        # FLAGS
+        can_validate:
+          type: boolean
+          nullable: true
+          description: Whether package can be validated
+          example: false
+        is_online_payable:
+          type: integer
+          enum: [0, 1]
+          nullable: true
+          description: Whether package supports online payment
+          example: 0
+
+    PackageDetails:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 2942850
+        package-code:
+          type: string
+          description: Package tracking code with hyphen
+          example: "H-13903-TIP-5885703"
+        package_type:
+          type: object
+          properties:
+            id:
+              type: integer
+              example: 1
+            name:
+              type: string
+              example: "شحن تجاري"
+            name_en:
+              type: string
+              example: "ONSPEED"
+            active:
+              type: integer
+              example: 1
+            parent:
+              type: integer
+              example: 0
+        package_sub_type:
+          nullable: true
+          example: null
+        reciever:
+          type: string
+          description: Recipient name (actual API field with typo)
+          example: "test partial"
+        phone:
+          type: string
+          example: "0925637943"
+        phone_b:
+          type: string
+          nullable: true
+          example: null
+        address:
+          type: string
+          example: "test - حي الأندلس"
+        price:
+          type: number
+          format: float
+          example: 0
+        origin_price:
+          type: number
+          format: float
+          example: 0
+        shippment:
+          type: number
+          format: float
+          example: 15
+        total:
+          type: number
+          format: float
+          example: 15
+        extra_size_price:
+          type: number
+          format: float
+          example: 0
+        region_commission:
+          type: number
+          format: float
+          example: 0
+        payment_methode:
+          type: string
+          example: "cash"
+        paid_by:
+          type: string
+          example: "customer"
+        extra_size_by:
+          type: string
+          example: "customer"
+        commission_by:
+          type: string
+          example: "customer"
+        courier_communication:
+          type: integer
+          example: 1
+        paid_by_ar:
+          type: string
+          example: "الزبون"
+        extra_size_by_ar:
+          type: string
+          example: "الزبون"
+        commission_by_ar:
+          type: string
+          example: "الزبون"
+        status:
+          type: string
+          example: "قيد التسوية المالية"
+        status_object:
+          type: object
+          properties:
+            id:
+              type: integer
+              example: 10
+            status_value:
+              type: string
+              example: "pending_office_sett"
+            status_name_admin:
+              type: string
+              example: "قيد التسوية المالية"
+            status_name_cust:
+              type: string
+              example: "قيد التسوية المالية"
+            type:
+              nullable: true
+              example: null
+            status_log:
+              type: string
+              example: "Successful delivery - pending settlement"
+            notes:
+              type: string
+              example: ""
+        create_date:
+          type: string
+          format: date
+          example: "2025-09-16"
+        address_code:
+          nullable: true
+          example: null
+        instore_date:
+          type: string
+          format: date-time
+          example: "2025-09-16 15:53:52"
+        delivery_date:
+          type: string
+          format: date-time
+          example: "2025-09-24 14:30:19"
+        update_date:
+          type: string
+          format: date-time
+          example: "2025-09-22 16:28:23"
+        qty:
+          type: integer
+          example: 0
+        qty_return:
+          type: integer
+          example: 0
+        recieved_money:
+          type: number
+          format: float
+          example: 15
+        description:
+          type: string
+          example: "test partial"
+        non_delivery_reason:
+          type: integer
+          example: 1
+        non_delivery_text:
+          type: string
+          example: "خطأ برقم الهاتف"
+        leangh:
+          type: integer
+          description: Package length (actual API field with typo)
+          example: 35
+        width:
+          type: integer
+          example: 35
+        height:
+          type: integer
+          example: 35
+        City:
+          type: object
+          properties:
+            id:
+              type: integer
+              example: 1
+            name:
+              type: string
+              example: "طرابلس"
+            code:
+              type: string
+              example: "TIP"
+            name_en:
+              type: string
+              example: "Tripoli"
+            region:
+              type: string
+              example: "TIP"
+            price:
+              type: number
+              format: float
+              example: 15
+            est_time:
+              type: string
+              example: "من نصف يوم إلى يومين"
+        sub_city:
+          type: object
+          properties:
+            id:
+              type: integer
+              example: 71
+            name:
+              type: string
+              example: "حي الأندلس"
+        sender:
+          type: object
+          properties:
+            id:
+              type: integer
+              example: 13903
+            name:
+              type: string
+              example: "Ahmed Test"
+        created_at:
+          type: string
+          format: date-time
+          example: "2025-09-16T13:37:53.000000Z"
+        updated_at:
+          type: string
+          format: date-time
+          example: "2025-09-24T12:30:19.000000Z"
+
+    PackageLog:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+        package_id:
+          type: integer
+          example: 1
+        status:
+          type: string
+          example: "shipped"
+        status_ar:
+          type: string
+          example: "تم الشحن"
+        description:
+          type: string
+          example: "تم شحن الطرد من المستودع"
+        location:
+          type: string
+          nullable: true
+          example: "مستودع طرابلس"
+        created_at:
+          type: string
+          format: date-time
+        admin:
+          type: object
+          nullable: true
+          properties:
+            id:
+              type: integer
+            name:
+              type: string
+
+    PackageTracking:
+      type: object
+      properties:
+        code:
+          type: string
+          example: "VNX123456"
+        status:
+          type: string
+          example: "shipped"
+        status_ar:
+          type: string
+          example: "تم الشحن"
+        receiver_name:
+          type: string
+          example: "أحمد محمد"
+        current_location:
+          type: string
+          nullable: true
+          example: "في الطريق إلى طرابلس"
+        estimated_delivery:
+          type: string
+          format: date
+          nullable: true
+          example: "2024-10-15"
+        logs:
+          type: array
+          items:
+            $ref: "#/components/schemas/PackageLog"
+
+    PackageType:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+        name:
+          type: string
+          example: "وثائق"
+        name_en:
+          type: string
+          example: "Documents"
+        active:
+          type: boolean
+          example: true
+
+    MoneyTransfer:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+        store_id:
+          type: integer
+          example: 1
+        user_id:
+          type: integer
+          example: 1
+        amount:
+          type: number
+          format: float
+          example: 1000.00
+        offer_amount:
+          type: number
+          format: float
+          nullable: true
+          example: 950.00
+        status:
+          type: string
+          enum: [new, pending, approved, rejected, cancelled]
+          example: "pending"
+        status_ar:
+          type: string
+          example: "قيد المراجعة"
+        store_notes:
+          type: string
+          nullable: true
+          example: "طلب تحويل عاجل"
+        offer_notes:
+          type: string
+          nullable: true
+          example: "تم تخفيض المبلغ بسبب الرسوم"
+        days:
+          type: integer
+          nullable: true
+          example: 3
+        hours:
+          type: integer
+          nullable: true
+          example: 24
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+        approved_at:
+          type: string
+          format: date-time
+          nullable: true
+        rejected_at:
+          type: string
+          format: date-time
+          nullable: true
+        payment_method:
+          $ref: "#/components/schemas/PaymentMethod"
+        officer:
+          type: object
+          nullable: true
+          properties:
+            id:
+              type: integer
+            name:
+              type: string
+
+    MoneyTransferDetails:
+      allOf:
+        - $ref: "#/components/schemas/MoneyTransfer"
+        - type: object
+          properties:
+            store:
+              $ref: "#/components/schemas/Store"
+            user:
+              $ref: "#/components/schemas/User"
+            logs:
+              type: array
+              items:
+                $ref: "#/components/schemas/MoneyTransferLog"
+
+    MoneyTransferLog:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+        money_transfer_id:
+          type: integer
+          example: 1
+        user_id:
+          type: integer
+          example: 1
+        description:
+          type: string
+          example: "تم إنشاء طلب التحويل"
+        created_at:
+          type: string
+          format: date-time
+        user:
+          type: object
+          properties:
+            id:
+              type: integer
+            name:
+              type: string
+
+    Settlement:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+        store_id:
+          type: integer
+          example: 1
+        settlement_number:
+          type: string
+          example: "SET-2024-001"
+        total_amount:
+          type: number
+          format: float
+          example: 2500.75
+        status:
+          type: string
+          enum: [pending, approved, rejected, paid]
+          example: "approved"
+        status_ar:
+          type: string
+          example: "موافق عليها"
+        payment_method_id:
+          type: integer
+          example: 1
+        notes:
+          type: string
+          nullable: true
+          example: "تسوية شهر يناير"
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+        approved_at:
+          type: string
+          format: date-time
+          nullable: true
+        paid_at:
+          type: string
+          format: date-time
+          nullable: true
+        payment_method:
+          $ref: "#/components/schemas/PaymentMethod"
+
+    SettlementDetails:
+      allOf:
+        - $ref: "#/components/schemas/Settlement"
+        - type: object
+          properties:
+            packages:
+              type: array
+              items:
+                $ref: "#/components/schemas/Package"
+            store:
+              $ref: "#/components/schemas/Store"
+
+    PaymentMethod:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+        name:
+          type: string
+          example: "حوالة بنكية"
+        name_en:
+          type: string
+          example: "Bank Transfer"
+        active:
+          type: boolean
+          example: true
+
+    StoreTransaction:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+        store_id:
+          type: integer
+          example: 1
+        type:
+          type: string
+          enum: [credit, debit, settlement, money_transfer, package_fee]
+          example: "credit"
+        type_ar:
+          type: string
+          example: "إيداع"
+        amount:
+          type: number
+          format: float
+          example: 500.00
+        balance:
+          type: number
+          format: float
+          example: 5500.00
+        description:
+          type: string
+          example: "إيداع من تسوية SET-2024-001"
+        method:
+          type: string
+          example: "bank_transfer"
+        method_ar:
+          type: string
+          example: "حوالة بنكية"
+        status:
+          type: string
+          enum: [pending, approved, rejected]
+          example: "approved"
+        date:
+          type: string
+          format: date-time
+        created_at:
+          type: string
+          format: date-time
+        package:
+          $ref: "#/components/schemas/Package"
+          nullable: true
+
+    Wallet:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+        user_id:
+          type: integer
+          example: 1
+        store_id:
+          type: integer
+          example: 1
+        wallet_type:
+          type: string
+          example: "main"
+        currency_type:
+          type: string
+          enum: [LYD, USD, EUR]
+          example: "LYD"
+        currency_amount:
+          type: number
+          format: float
+          example: 1000.00
+        expiry_at:
+          type: string
+          format: date-time
+          nullable: true
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+
+    Notification:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+        user_id:
+          type: integer
+          example: 1
+        title:
+          type: string
+          example: "تحديث حالة الطرد"
+        message:
+          type: string
+          example: "تم تسليم طردك بنجاح"
+        type:
+          type: string
+          enum: [package, money_transfer, settlement, general]
+          example: "package"
+        read:
+          type: boolean
+          example: false
+        data:
+          type: object
+          nullable: true
+          properties:
+            package_id:
+              type: integer
+            package_code:
+              type: string
+        created_at:
+          type: string
+          format: date-time
+
+    UserStatistics:
+      type: object
+      properties:
+        total_packages:
+          type: integer
+          example: 150
+        delivered_packages:
+          type: integer
+          example: 125
+        pending_packages:
+          type: integer
+          example: 15
+        cancelled_packages:
+          type: integer
+          example: 10
+        total_spent:
+          type: number
+          format: float
+          example: 15750.50
+        current_balance:
+          type: number
+          format: float
+          example: 2500.00
+        this_month_packages:
+          type: integer
+          example: 25
+        this_month_spent:
+          type: number
+          format: float
+          example: 1250.00
+
+    City:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+        name:
+          type: string
+          example: "طرابلس"
+        name_en:
+          type: string
+          example: "Tripoli"
+        code:
+          type: string
+          example: "TPL"
+        region_id:
+          type: integer
+          example: 1
+        active:
+          type: boolean
+          example: true
+
+    SubCity:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+        name:
+          type: string
+          example: "باب بن غشير"
+        name_en:
+          type: string
+          example: "Bab Ben Gashir"
+        parent_city_id:
+          type: integer
+          example: 1
+        delivery_price:
+          type: number
+          format: float
+          example: 15.00
+
+    DeliveryPrice:
+      type: object
+      properties:
+        city_id:
+          type: integer
+          example: 1
+        city_name:
+          type: string
+          example: "طرابلس"
+        sub_city_id:
+          type: integer
+          example: 1
+        sub_city_name:
+          type: string
+          example: "باب بن غشير"
+        price:
+          type: number
+          format: float
+          example: 15.00
+        region:
+          type: string
+          example: "المنطقة الغربية"
+
+    Journey:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+        journey_code:
+          type: string
+          example: "JRN001"
+        driver_name:
+          type: string
+          example: "محمد السائق"
+        vehicle_number:
+          type: string
+          example: "123-ABC"
+        origin_city:
+          type: string
+          example: "طرابلس"
+        destination_city:
+          type: string
+          example: "بنغازي"
+        departure_date:
+          type: string
+          format: date-time
+        estimated_arrival:
+          type: string
+          format: date-time
+        status:
+          type: string
+          enum: [pending, in_progress, completed, delayed]
+          example: "in_progress"
+
+    # Missing Schemas Added for Validation
+    Nationality:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+        name:
+          type: string
+          example: "Libya"
+        code:
+          type: string
+          example: "LY"
+
+    PaginatedPackages:
+      type: object
+      allOf:
+        - $ref: "#/components/schemas/ApiResponse"
+        - type: object
+          properties:
+            data:
+              type: object
+              properties:
+                data:
+                  type: array
+                  items:
+                    $ref: "#/components/schemas/PackageDetails"
+                current_page:
+                  type: integer
+                  example: 1
+                last_page:
+                  type: integer
+                  example: 10
+                per_page:
+                  type: integer
+                  example: 15
+                total:
+                  type: integer
+                  example: 150
+
+    PackageDashboard:
+      type: object
+      allOf:
+        - $ref: "#/components/schemas/ApiResponse"
+        - type: object
+          properties:
+            data:
+              type: object
+              properties:
+                total_packages:
+                  type: integer
+                  example: 150
+                pending_packages:
+                  type: integer
+                  example: 25
+                delivered_packages:
+                  type: integer
+                  example: 100
+                cancelled_packages:
+                  type: integer
+                  example: 25
+                total_revenue:
+                  type: number
+                  format: float
+                  example: 15000.50
+
+    PackageStatus:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+        name:
+          type: string
+          example: "في الطريق"
+        description:
+          type: string
+          example: "Package is on the way to destination"
+        color:
+          type: string
+          example: "#FF5722"
+
+    SettlementCreationData:
+      type: object
+      allOf:
+        - $ref: "#/components/schemas/ApiResponse"
+        - type: object
+          properties:
+            data:
+              type: object
+              properties:
+                available_balance:
+                  type: number
+                  format: float
+                  example: 5000.00
+                minimum_settlement:
+                  type: number
+                  format: float
+                  example: 100.00
+                settlement_fee:
+                  type: number
+                  format: float
+                  example: 10.00
+
+    CreateSettlementRequest:
+      type: object
+      required:
+        - amount
+      properties:
+        amount:
+          type: number
+          format: float
+          description: Settlement amount
+          example: 1000.00
+        notes:
+          type: string
+          description: Optional settlement notes
+          example: "Monthly settlement"
+
+    PaginatedSettlements:
+      type: object
+      allOf:
+        - $ref: "#/components/schemas/ApiResponse"
+        - type: object
+          properties:
+            data:
+              type: object
+              properties:
+                data:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      id:
+                        type: integer
+                        example: 1
+                      amount:
+                        type: number
+                        format: float
+                        example: 1000.00
+                      status:
+                        type: string
+                        example: "pending"
+                      created_at:
+                        type: string
+                        format: date-time
+                current_page:
+                  type: integer
+                  example: 1
+                last_page:
+                  type: integer
+                  example: 5
+                per_page:
+                  type: integer
+                  example: 15
+                total:
+                  type: integer
+                  example: 75
+
+    CreateWalletRequest:
+      type: object
+      required:
+        - type
+        - currency
+      properties:
+        type:
+          type: string
+          description: Wallet type
+          example: "personal"
+        currency:
+          type: string
+          description: Wallet currency
+          example: "LYD"
+        initial_balance:
+          type: number
+          format: float
+          description: Initial wallet balance
+          example: 0.00
+
+    PaginatedTransactions:
+      type: object
+      allOf:
+        - $ref: "#/components/schemas/ApiResponse"
+        - type: object
+          properties:
+            data:
+              type: object
+              properties:
+                data:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      id:
+                        type: integer
+                        example: 1
+                      amount:
+                        type: number
+                        format: float
+                        example: 500.00
+                      type:
+                        type: string
+                        example: "credit"
+                      description:
+                        type: string
+                        example: "Package payment"
+                      created_at:
+                        type: string
+                        format: date-time
+                current_page:
+                  type: integer
+                  example: 1
+                last_page:
+                  type: integer
+                  example: 8
+                per_page:
+                  type: integer
+                  example: 15
+                total:
+                  type: integer
+                  example: 120
+
+  responses:
+    Unauthorized:
+      description: Unauthorized - Invalid or missing authentication token
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              status_code:
+                type: integer
+                example: 401
+              message:
+                type: string
+                example: "غير مصرح لك بالوصول"
+              errors:
+                type: object
+                example:
+                  auth: ["الرمز المميز غير صالح"]
+
+    ValidationError:
+      description: Validation Error - Invalid input data
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              status_code:
+                type: integer
+                example: 422
+              message:
+                type: string
+                example: "خطأ في البيانات المدخلة"
+              errors:
+                type: object
+                example:
+                  email: ["البريد الإلكتروني مطلوب"]
+                  password: ["كلمة المرور يجب أن تكون 8 أحرف على الأقل"]
+
+    NotFound:
+      description: Resource Not Found
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              status_code:
+                type: integer
+                example: 404
+              message:
+                type: string
+                example: "العنصر غير موجود"
+              errors:
+                type: object
+                example:
+                  resource: ["العنصر المطلوب غير موجود"]
+
+    ServerError:
+      description: Internal Server Error
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              status_code:
+                type: integer
+                example: 500
+              message:
+                type: string
+                example: "حدث خطأ في الخادم"
+              errors:
+                type: object
+                example:
+                  server: ["حدث خطأ غير متوقع"]
+
+    Forbidden:
+      description: Access Forbidden
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              status_code:
+                type: integer
+                example: 403
+              message:
+                type: string
+                example: "ليس لديك صلاحية للوصول لهذا المورد"
+              data:
+                type: object
+                nullable: true
+              errors:
+                type: object
+                nullable: true
+
+    # ========================================
+    # ADDITIONAL REFERENCE DATA RESPONSES
+    # ========================================
+    CitiesResponse:
+      description: Cities list retrieved successfully
+      content:
+        application/json:
+          schema:
+            allOf:
+              - $ref: "#/components/schemas/ApiResponse"
+              - type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/City"
+
+    NationalitiesResponse:
+      description: Nationalities list retrieved successfully
+      content:
+        application/json:
+          schema:
+            allOf:
+              - $ref: "#/components/schemas/ApiResponse"
+              - type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/Nationality"
+
+    PaymentMethodsResponse:
+      description: Payment methods retrieved successfully
+      content:
+        application/json:
+          schema:
+            allOf:
+              - $ref: "#/components/schemas/ApiResponse"
+              - type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/PaymentMethod"

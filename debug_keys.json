@@ -1,0 +1,168 @@
+{
+  "rootKeys": [
+    "status_code",
+    "message",
+    "data",
+    "errors",
+    "code"
+  ],
+  "dataKeys": [
+    "status_code",
+    "message",
+    "access_token",
+    "token_type",
+    "user",
+    "permissions"
+  ],
+  "fullResponse": {
+    "status_code": 200,
+    "message": "",
+    "data": {
+      "status_code": 200,
+      "message": "تم تسجيل الدخول",
+      "access_token": "64876|1UFBtJ7nNkHAk8Gz1Xt03JKX8VD9hJeW254GNoea",
+      "token_type": "Bearer",
+      "user": {
+        "id": 22045,
+        "name": "Ali ohiba",
+        "company": 21128,
+        "email": "Aliohiba7@gmail.com",
+        "type": 1,
+        "full_access": 0,
+        "branch_region": null,
+        "storage_subscription": null,
+        "office_cities": [
+          42,
+          200,
+          500,
+          823,
+          1139,
+          1140,
+          69,
+          222,
+          501,
+          845,
+          319,
+          320,
+          502,
+          847,
+          704,
+          705,
+          706,
+          881,
+          1183,
+          1184,
+          1185,
+          1186
+        ],
+        "avatar": null,
+        "store_manager": 1,
+        "show_packages": 1,
+        "create_packages": 1,
+        "edit_packages": 1,
+        "create_collects": 1,
+        "edit_collects": 1,
+        "settelment_collects": 1,
+        "show_transactions": 1,
+        "show_reports": 1,
+        "can_contact": 1,
+        "handover": 1,
+        "permissions": [
+          {
+            "action": "store_manager",
+            "subject": "Auth"
+          },
+          {
+            "action": "create_packages",
+            "subject": "Auth"
+          },
+          {
+            "action": "show_packages",
+            "subject": "Auth"
+          },
+          {
+            "action": "edit_packages",
+            "subject": "Auth"
+          },
+          {
+            "action": "create_collects",
+            "subject": "Auth"
+          },
+          {
+            "action": "edit_collects",
+            "subject": "Auth"
+          },
+          {
+            "action": "settelment_collects",
+            "subject": "Auth"
+          },
+          {
+            "action": "show_transactions",
+            "subject": "Auth"
+          },
+          {
+            "action": "show_reports",
+            "subject": "Auth"
+          },
+          {
+            "action": "can_contact",
+            "subject": "Auth"
+          },
+          {
+            "action": "handover",
+            "subject": "Auth"
+          }
+        ],
+        "need_regenerate": true
+      },
+      "permissions": [
+        {
+          "action": "store_manager",
+          "subject": "Auth"
+        },
+        {
+          "action": "create_packages",
+          "subject": "Auth"
+        },
+        {
+          "action": "show_packages",
+          "subject": "Auth"
+        },
+        {
+          "action": "edit_packages",
+          "subject": "Auth"
+        },
+        {
+          "action": "create_collects",
+          "subject": "Auth"
+        },
+        {
+          "action": "edit_collects",
+          "subject": "Auth"
+        },
+        {
+          "action": "settelment_collects",
+          "subject": "Auth"
+        },
+        {
+          "action": "show_transactions",
+          "subject": "Auth"
+        },
+        {
+          "action": "show_reports",
+          "subject": "Auth"
+        },
+        {
+          "action": "can_contact",
+          "subject": "Auth"
+        },
+        {
+          "action": "handover",
+          "subject": "Auth"
+        }
+      ]
+    },
+    "errors": false,
+    "code": null
+  }
+}

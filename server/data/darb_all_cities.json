@@ -1,0 +1,889 @@
+[
+  {
+    "b2nPackageId": 5090695094606062,
+    "branchId": "طرابلس 1",
+    "node": "جنزور 15",
+    "amountFrom": 0,
+    "amountTo": 10,
+    "modifiedOn": 1679929381,
+    "createdOn": 1679929381
+  },
+  {
+    "b2nPackageId": 5090695636748599,
+    "branchId": "طرابلس 1",
+    "node": "شارع ولي العهد 15",
+    "amountFrom": 0,
+    "amountTo": 10,
+    "modifiedOn": 1679929560,
+    "createdOn": 1679929560
+  },
+  {
+    "b2nPackageId": 509069734188290,
+    "branchId": "طرابلس 1",
+    "node": "السياحية 15",
+    "amountFrom": 0,
+    "amountTo": 10,
+    "modifiedOn": 1679930122,
+    "createdOn": 1679930122
+  },
+  {
+    "b2nPackageId": 5090698291662005,
+    "branchId": "طرابلس 1",
+    "node": "طريق المشتل 15",
+    "amountFrom": 0,
+    "amountTo": 10,
+    "modifiedOn": 1679930436,
+    "createdOn": 1679930436
+  },
+  {
+    "b2nPackageId": 509069829166698,
+    "branchId": "طرابلس 1",
+    "node": "مشروع الهضبة 15",
+    "amountFrom": 0,
+    "amountTo": 10,
+    "modifiedOn": 1679930436,
+    "createdOn": 1679930436
+  },
+  {
+    "b2nPackageId": 5090698291670050,
+    "branchId": "طرابلس 1",
+    "node": "الدعوة الإسلامية 15",
+    "amountFrom": 0,
+    "amountTo": 10,
+    "modifiedOn": 1679930436,
+    "createdOn": 1679930436
+  },
+  {
+    "b2nPackageId": 5090698291668794,
+    "branchId": "طرابلس 1",
+    "node": "تاجوراء 15",
+    "amountFrom": 0,
+    "amountTo": 10,
+    "modifiedOn": 1679930436,
+    "createdOn": 1679930436
+  },
+  {
+    "b2nPackageId": 5090698291669544,
+    "branchId": "طرابلس 1",
+    "node": "البيفي 15",
+    "amountFrom": 0,
+    "amountTo": 10,
+    "modifiedOn": 1679930436,
+    "createdOn": 1679930436
+  },
+  {
+    "b2nPackageId": 5090698291663491,
+    "branchId": "طرابلس 1",
+    "node": "صلاح الدين 15",
+    "amountFrom": 0,
+    "amountTo": 10,
+    "modifiedOn": 1679930436,
+    "createdOn": 1679930436
+  },
+  {
+    "b2nPackageId": 5090698291666241,
+    "branchId": "طرابلس 1",
+    "node": "عين زارة 15",
+    "amountFrom": 0,
+    "amountTo": 10,
+    "modifiedOn": 1679930436,
+    "createdOn": 1679930436
+  },
+  {
+    "b2nPackageId": 5090698291667847,
+    "branchId": "طرابلس 1",
+    "node": "الهضبة البدري 15",
+    "amountFrom": 0,
+    "amountTo": 10,
+    "modifiedOn": 1679930436,
+    "createdOn": 1679930436
+  },
+  {
+    "b2nPackageId": 4905473204202232,
+    "branchId": "طرابلس 1",
+    "node": "طريق الفلاح 10",
+    "amountFrom": 0,
+    "amountTo": 10,
+    "modifiedOn": 1626204744,
+    "createdOn": 1618806157
+  },
+  {
+    "b2nPackageId": 5090698291668265,
+    "branchId": "طرابلس 1",
+    "node": "الهضبة الخضراء 15",
+    "amountFrom": 0,
+    "amountTo": 10,
+    "modifiedOn": 1679930436,
+    "createdOn": 1679930436
+  },
+  {
+    "b2nPackageId": 5090698291664435,
+    "branchId": "طرابلس 1",
+    "node": "طريق المطار 15",
+    "amountFrom": 0,
+    "amountTo": 10,
+    "modifiedOn": 1679930436,
+    "createdOn": 1679930436
+  },
+  {
+    "b2nPackageId": 5090698291667958,
+    "branchId": "طرابلس 1",
+    "node": "قرقارش 15",
+    "amountFrom": 0,
+    "amountTo": 10,
+    "modifiedOn": 1679930436,
+    "createdOn": 1679930436
+  },
+  {
+    "b2nPackageId": 5090698748868039,
+    "branchId": "طرابلس 1",
+    "node": "بوابة الجبس 15",
+    "amountFrom": 0,
+    "amountTo": 10,
+    "modifiedOn": 1679930587,
+    "createdOn": 1679930587
+  },
+  {
+    "b2nPackageId": 5090699269968883,
+    "branchId": "طرابلس 1",
+    "node": "الهضبة طول 15",
+    "amountFrom": 0,
+    "amountTo": 10,
+    "modifiedOn": 1679930759,
+    "createdOn": 1679930759
+  },
+  {
+    "b2nPackageId": 5090701346121464,
+    "branchId": "طرابلس 1",
+    "node": "الكيزة 15",
+    "amountFrom": 0,
+    "amountTo": 10,
+    "modifiedOn": 1679931444,
+    "createdOn": 1679931444
+  },
+  {
+    "b2nPackageId": 5090701346125668,
+    "branchId": "طرابلس 1",
+    "node": "غوط الشعال 15",
+    "amountFrom": 0,
+    "amountTo": 10,
+    "modifiedOn": 1679931444,
+    "createdOn": 1679931444
+  },
+  {
+    "b2nPackageId": 5090701346126996,
+    "branchId": "طرابلس 1",
+    "node": "السراج 15",
+    "amountFrom": 0,
+    "amountTo": 10,
+    "modifiedOn": 1679931444,
+    "createdOn": 1679931444
+  },
+  {
+    "b2nPackageId": 5090703142306235,
+    "branchId": "طرابلس 1",
+    "node": "أربعة شوارع الجلدية 15",
+    "amountFrom": 0,
+    "amountTo": 10,
+    "modifiedOn": 1679932036,
+    "createdOn": 1679932036
+  },
+  {
+    "b2nPackageId": 4927332755729799,
+    "branchId": "طرابلس 1",
+    "node": "النجيلة 20",
+    "amountFrom": 0,
+    "amountTo": 20,
+    "modifiedOn": 1626204685,
+    "createdOn": 1626019809
+  },
+  {
+    "b2nPackageId": 4927332755723374,
+    "branchId": "طرابلس 1",
+    "node": "السواني 20",
+    "amountFrom": 0,
+    "amountTo": 20,
+    "modifiedOn": 1626204678,
+    "createdOn": 1626019809
+  },
+  {
+    "b2nPackageId": 4927332755727479,
+    "branchId": "طرابلس 1",
+    "node": "الكريمية 20",
+    "amountFrom": 0,
+    "amountTo": 20,
+    "modifiedOn": 1626204669,
+    "createdOn": 1626019809
+  },
+  {
+    "b2nPackageId": 4927332755723845,
+    "branchId": "طرابلس 1",
+    "node": "حي الأندلس 10",
+    "amountFrom": 0,
+    "amountTo": 10,
+    "modifiedOn": 1626204616,
+    "createdOn": 1626019809
+  },
+  {
+    "b2nPackageId": 4927332755726741,
+    "branchId": "طرابلس 1",
+    "node": "قرجي 10",
+    "amountFrom": 0,
+    "amountTo": 10,
+    "modifiedOn": 1626204601,
+    "createdOn": 1626019809
+  },
+  {
+    "b2nPackageId": 4927332755727036,
+    "branchId": "طرابلس 1",
+    "node": "ابوسليم 10",
+    "amountFrom": 0,
+    "amountTo": 10,
+    "modifiedOn": 1626204593,
+    "createdOn": 1626019809
+  },
+  {
+    "b2nPackageId": 4927332755734796,
+    "branchId": "طرابلس 1",
+    "node": "حي الاكواخ 10",
+    "amountFrom": 0,
+    "amountTo": 10,
+    "modifiedOn": 1626204575,
+    "createdOn": 1626019809
+  },
+  {
+    "b2nPackageId": 4927332755731573,
+    "branchId": "طرابلس 1",
+    "node": "الفرناج 10",
+    "amountFrom": 0,
+    "amountTo": 10,
+    "modifiedOn": 1626204529,
+    "createdOn": 1626019809
+  },
+  {
+    "b2nPackageId": 4927332755735782,
+    "branchId": "طرابلس 1",
+    "node": "زناتة 10",
+    "amountFrom": 0,
+    "amountTo": 10,
+    "modifiedOn": 1626204520,
+    "createdOn": 1626019809
+  },
+  {
+    "b2nPackageId": 4927332755740360,
+    "branchId": "طرابلس 1",
+    "node": "الظهرة 10",
+    "amountFrom": 0,
+    "amountTo": 10,
+    "modifiedOn": 1626204495,
+    "createdOn": 1626019809
+  },
+  {
+    "b2nPackageId": 4927334078548626,
+    "branchId": "طرابلس 1",
+    "node": "شارع النصر 10",
+    "amountFrom": 0,
+    "amountTo": 10,
+    "modifiedOn": 1626204486,
+    "createdOn": 1626020245
+  },
+  {
+    "b2nPackageId": 4927334313337859,
+    "branchId": "طرابلس 1",
+    "node": "رأس حسن 10",
+    "amountFrom": 0,
+    "amountTo": 10,
+    "modifiedOn": 1626204476,
+    "createdOn": 1626020323
+  },
+  {
+    "b2nPackageId": 492733431333796,
+    "branchId": "طرابلس 1",
+    "node": "بن عاشور 10",
+    "amountFrom": 0,
+    "amountTo": 10,
+    "modifiedOn": 1626204460,
+    "createdOn": 1626020323
+  },
+  {
+    "b2nPackageId": 4927334313333142,
+    "branchId": "طرابلس 1",
+    "node": "جرابة 10",
+    "amountFrom": 0,
+    "amountTo": 10,
+    "modifiedOn": 1626204447,
+    "createdOn": 1626020323
+  },
+  {
+    "b2nPackageId": 4927334444572195,
+    "branchId": "طرابلس 1",
+    "node": "شارع الظل 10",
+    "amountFrom": 0,
+    "amountTo": 10,
+    "modifiedOn": 1626204439,
+    "createdOn": 1626020366
+  },
+  {
+    "b2nPackageId": 4927334555075701,
+    "branchId": "طرابلس 1",
+    "node": "الهاني 10",
+    "amountFrom": 0,
+    "amountTo": 10,
+    "modifiedOn": 1626204427,
+    "createdOn": 1626020403
+  },
+  {
+    "b2nPackageId": 4927334555082391,
+    "branchId": "طرابلس 1",
+    "node": "المدينة 10",
+    "amountFrom": 0,
+    "amountTo": 10,
+    "modifiedOn": 1626204412,
+    "createdOn": 1626020403
+  },
+  {
+    "b2nPackageId": 4927334692613423,
+    "branchId": "طرابلس 1",
+    "node": "عرادة 10",
+    "amountFrom": 0,
+    "amountTo": 10,
+    "modifiedOn": 1626204403,
+    "createdOn": 1626020448
+  },
+  {
+    "b2nPackageId": 4927334745210756,
+    "branchId": "طرابلس 1",
+    "node": "سوق الجمعة 10",
+    "amountFrom": 0,
+    "amountTo": 10,
+    "modifiedOn": 1626204394,
+    "createdOn": 1626020465
+  },
+  {
+    "b2nPackageId": 4927335780761890,
+    "branchId": "طرابلس 1",
+    "node": "البطاطا 10",
+    "amountFrom": 0,
+    "amountTo": 10,
+    "modifiedOn": 1626204369,
+    "createdOn": 1626020807
+  },
+  {
+    "b2nPackageId": 4927335780762910,
+    "branchId": "طرابلس 1",
+    "node": "حي دمشق 10",
+    "amountFrom": 0,
+    "amountTo": 10,
+    "modifiedOn": 1626204356,
+    "createdOn": 1626020807
+  },
+  {
+    "b2nPackageId": 4927335780770349,
+    "branchId": "طرابلس 1",
+    "node": "طريق الصور 10",
+    "amountFrom": 0,
+    "amountTo": 10,
+    "modifiedOn": 1626204335,
+    "createdOn": 1626020807
+  },
+  {
+    "b2nPackageId": 4927335780763215,
+    "branchId": "طرابلس 1",
+    "node": "السيدي 10",
+    "amountFrom": 0,
+    "amountTo": 10,
+    "modifiedOn": 1626204324,
+    "createdOn": 1626020807
+  },
+  {
+    "b2nPackageId": 4927335780769168,
+    "branchId": "طرابلس 1",
+    "node": "النوفليين 10",
+    "amountFrom": 0,
+    "amountTo": 10,
+    "modifiedOn": 1626204306,
+    "createdOn": 1626020807
+  },
+  {
+    "b2nPackageId": 4927335780764272,
+    "branchId": "طرابلس 1",
+    "node": "طريق الشوك 10",
+    "amountFrom": 0,
+    "amountTo": 10,
+    "modifiedOn": 1626204288,
+    "createdOn": 1626020807
+  },
+  {
+    "b2nPackageId": 4927335780761794,
+    "branchId": "طرابلس 1",
+    "node": "السبعة 10",
+    "amountFrom": 0,
+    "amountTo": 10,
+    "modifiedOn": 1626204268,
+    "createdOn": 1626020807
+  },
+  {
+    "b2nPackageId": 4927335780767818,
+    "branchId": "طرابلس 1",
+    "node": "وادي الربيع 20",
+    "amountFrom": 0,
+    "amountTo": 20,
+    "modifiedOn": 1626204134,
+    "createdOn": 1626020807
+  },
+  {
+    "b2nPackageId": 4927335780770376,
+    "branchId": "طرابلس 1",
+    "node": "الخلة 20",
+    "amountFrom": 0,
+    "amountTo": 20,
+    "modifiedOn": 1626204123,
+    "createdOn": 1626020807
+  },
+  {
+    "b2nPackageId": 4927335780764565,
+    "branchId": "طرابلس 1",
+    "node": "قصر بن غاشير 20",
+    "amountFrom": 0,
+    "amountTo": 20,
+    "modifiedOn": 1626204110,
+    "createdOn": 1626020807
+  },
+  {
+    "b2nPackageId": 4927335780768876,
+    "branchId": "طرابلس 1",
+    "node": "سوق السبت 20",
+    "amountFrom": 0,
+    "amountTo": 20,
+    "modifiedOn": 1626204097,
+    "createdOn": 1626020807
+  },
+  {
+    "b2nPackageId": 4927335780769827,
+    "branchId": "طرابلس 1",
+    "node": "الغرارات 10",
+    "amountFrom": 0,
+    "amountTo": 10,
+    "modifiedOn": 1626204073,
+    "createdOn": 1626020807
+  },
+  {
+    "b2nPackageId": 4927335780766411,
+    "branchId": "طرابلس 1",
+    "node": "معيتيقة 10",
+    "amountFrom": 0,
+    "amountTo": 10,
+    "modifiedOn": 1626204063,
+    "createdOn": 1626020807
+  },
+  {
+    "b2nPackageId": 4927336489120355,
+    "branchId": "طرابلس 1",
+    "node": "طريق عشرين رمضان 10",
+    "amountFrom": 0,
+    "amountTo": 10,
+    "modifiedOn": 1626204051,
+    "createdOn": 1626021041
+  },
+  {
+    "b2nPackageId": 4927336489114858,
+    "branchId": "طرابلس 1",
+    "node": "فشلوم 10",
+    "amountFrom": 0,
+    "amountTo": 10,
+    "modifiedOn": 1626204006,
+    "createdOn": 1626021041
+  },
+  {
+    "b2nPackageId": 4927336489112859,
+    "branchId": "طرابلس 1",
+    "node": "باب العزيزية 10",
+    "amountFrom": 0,
+    "amountTo": 10,
+    "modifiedOn": 1626203976,
+    "createdOn": 1626021041
+  },
+  {
+    "b2nPackageId": 492733648911862,
+    "branchId": "طرابلس 1",
+    "node": "باب عكارة 10",
+    "amountFrom": 0,
+    "amountTo": 10,
+    "modifiedOn": 1626203959,
+    "createdOn": 1626021041
+  },
+  {
+    "b2nPackageId": 4927336489112954,
+    "branchId": "طرابلس 1",
+    "node": "شارع الجمهورية 10",
+    "amountFrom": 0,
+    "amountTo": 10,
+    "modifiedOn": 1626203950,
+    "createdOn": 1626021041
+  },
+  {
+    "b2nPackageId": 4927336489119095,
+    "branchId": "طرابلس 1",
+    "node": "المنصورة 10",
+    "amountFrom": 0,
+    "amountTo": 10,
+    "modifiedOn": 1626203931,
+    "createdOn": 1626021041
+  },
+  {
+    "b2nPackageId": 4927336489116363,
+    "branchId": "طرابلس 1",
+    "node": "غرغور 10",
+    "amountFrom": 0,
+    "amountTo": 10,
+    "modifiedOn": 1626203922,
+    "createdOn": 1626021041
+  },
+  {
+    "b2nPackageId": 4927336489111900,
+    "branchId": "طرابلس 1",
+    "node": "الدريبي 10",
+    "amountFrom": 0,
+    "amountTo": 10,
+    "modifiedOn": 1626203905,
+    "createdOn": 1626021041
+  },
+  {
+    "b2nPackageId": 4927336489119154,
+    "branchId": "طرابلس 1",
+    "node": "باب بن غشير 10",
+    "amountFrom": 0,
+    "amountTo": 10,
+    "modifiedOn": 1626021041,
+    "createdOn": 1626021041
+  },
+  {
+    "b2nPackageId": 4927357524238376,
+    "branchId": "المنطقة الشرقية 2",
+    "node": "المرج 35",
+    "amountFrom": 0,
+    "amountTo": 0
+  },
+  {
+    "b2nPackageId": 4927357524238033,
+    "branchId": "المنطقة الشرقية 2",
+    "node": "الأبيار 35",
+    "amountFrom": 0,
+    "amountTo": 0
+  },
+  {
+    "b2nPackageId": 4927357524239936,
+    "branchId": "المنطقة الشرقية 2",
+    "node": "البيضاء 35",
+    "amountFrom": 0,
+    "amountTo": 0
+  },
+  {
+    "b2nPackageId": 4927360532225729,
+    "branchId": "غرب طرابلس 3",
+    "node": "زلطن 30",
+    "amountFrom": 0,
+    "amountTo": 0
+  },
+  {
+    "b2nPackageId": 4927360532226931,
+    "branchId": "غرب طرابلس 3",
+    "node": "رقدالين 30",
+    "amountFrom": 0,
+    "amountTo": 0
+  },
+  {
+    "b2nPackageId": 4927360532223191,
+    "branchId": "غرب طرابلس 3",
+    "node": "الجميل 30",
+    "amountFrom": 0,
+    "amountTo": 0
+  },
+  {
+    "b2nPackageId": 4927360532224615,
+    "branchId": "غرب طرابلس 3",
+    "node": "العجيلات 30",
+    "amountFrom": 0,
+    "amountTo": 0
+  },
+  {
+    "b2nPackageId": 4927365063646315,
+    "branchId": "شرق طرابلس 1",
+    "node": "القره بولي 20",
+    "amountFrom": 0,
+    "amountTo": 0
+  },
+  {
+    "b2nPackageId": 4927365063645920,
+    "branchId": "شرق طرابلس 1",
+    "node": "قماطة 20",
+    "amountFrom": 0,
+    "amountTo": 0
+  },
+  {
+    "b2nPackageId": 4927365063644614,
+    "branchId": "شرق طرابلس 1",
+    "node": "قصر خيار 20",
+    "amountFrom": 0,
+    "amountTo": 0
+  },
+  {
+    "b2nPackageId": 4927365063641947,
+    "branchId": "شرق طرابلس 1",
+    "node": "الخمس 20",
+    "amountFrom": 0,
+    "amountTo": 0
+  },
+  {
+    "b2nPackageId": 4927365063647254,
+    "branchId": "شرق طرابلس 1",
+    "node": "زليتن 20",
+    "amountFrom": 0,
+    "amountTo": 0
+  },
+  {
+    "b2nPackageId": 4927365063644326,
+    "branchId": "شرق طرابلس 1",
+    "node": "مصراتة 20",
+    "amountFrom": 0,
+    "amountTo": 0
+  },
+  {
+    "b2nPackageId": 4927366219027792,
+    "branchId": "جنوب طرابلس 2",
+    "node": "بني وليد 30",
+    "amountFrom": 0,
+    "amountTo": 0
+  },
+  {
+    "b2nPackageId": 492736621903127,
+    "branchId": "جنوب طرابلس 2",
+    "node": "ترهونة 30",
+    "amountFrom": 0,
+    "amountTo": 0
+  },
+  {
+    "b2nPackageId": 49273667498568,
+    "branchId": "الجبل الغربي 1",
+    "node": "الرابطة 30",
+    "amountFrom": 0,
+    "amountTo": 0
+  },
+  {
+    "b2nPackageId": 4927366749814449,
+    "branchId": "الجبل الغربي 1",
+    "node": "غريان 30",
+    "amountFrom": 0,
+    "amountTo": 0
+  },
+  {
+    "b2nPackageId": 4927368210535821,
+    "branchId": "المنطقة الجنوبية 1",
+    "node": "سبها 35",
+    "amountFrom": 0,
+    "amountTo": 0
+  },
+  {
+    "b2nPackageId": 492736918685516,
+    "branchId": "المنطقة الجنوبية 3",
+    "node": "اوباري 50",
+    "amountFrom": 0,
+    "amountTo": 0
+  },
+  {
+    "b2nPackageId": 4927373862890012,
+    "branchId": "المنطقة الجنوبية 4",
+    "node": "مرزق 60",
+    "amountFrom": 0,
+    "amountTo": 0
+  },
+  {
+    "b2nPackageId": 4927373862887523,
+    "branchId": "المنطقة الجنوبية 4",
+    "node": "غات 60",
+    "amountFrom": 0,
+    "amountTo": 20
+  },
+  {
+    "b2nPackageId": 4927374837815221,
+    "branchId": "الجنوب الشرقي 1",
+    "node": "جالو اوجلة 50",
+    "amountFrom": 0,
+    "amountTo": 0
+  },
+  {
+    "b2nPackageId": 4927374837813943,
+    "branchId": "الجنوب الشرقي 1",
+    "node": "الكفرة 50",
+    "amountFrom": 0,
+    "amountTo": 0
+  },
+  {
+    "b2nPackageId": 4927375126346626,
+    "branchId": "المنطقة الجنوبية 4",
+    "node": "تراغن 60",
+    "amountFrom": 0,
+    "amountTo": 0
+  },
+  {
+    "b2nPackageId": 4927375126350039,
+    "branchId": "المنطقة الجنوبية 4",
+    "node": "العوينات 60",
+    "amountFrom": 0,
+    "amountTo": 0
+  },
+  {
+    "b2nPackageId": 4927375941210310,
+    "branchId": "المنطقة الوسطى 1",
+    "node": "سرت 30",
+    "amountFrom": 0,
+    "amountTo": 0
+  },
+  {
+    "b2nPackageId": 4927375941209892,
+    "branchId": "المنطقة الوسطى 1",
+    "node": "هراوة 30",
+    "amountFrom": 0,
+    "amountTo": 0
+  },
+  {
+    "b2nPackageId": 4927375941208383,
+    "branchId": "المنطقة الوسطى 1",
+    "node": "البريقة 30",
+    "amountFrom": 0,
+    "amountTo": 0
+  },
+  {
+    "b2nPackageId": 4927375941206279,
+    "branchId": "المنطقة الوسطى 1",
+    "node": "رأس لانوف 30",
+    "amountFrom": 0,
+    "amountTo": 0
+  },
+  {
+    "b2nPackageId": 492737594120799,
+    "branchId": "المنطقة الوسطى 1",
+    "node": "اجدابيا 30",
+    "amountFrom": 0,
+    "amountTo": 0
+  },
+  {
+    "b2nPackageId": 4927375941203813,
+    "branchId": "المنطقة الوسطى 1",
+    "node": "بن جواد 30",
+    "amountFrom": 0,
+    "amountTo": 0
+  },
+  {
+    "b2nPackageId": 4927375941202167,
+    "branchId": "المنطقة الوسطى 1",
+    "node": "العقيلة 30",
+    "amountFrom": 0,
+    "amountTo": 0
+  },
+  {
+    "b2nPackageId": 4927375941202914,
+    "branchId": "المنطقة الوسطى 1",
+    "node": "النوفلية 30",
+    "amountFrom": 0,
+    "amountTo": 0
+  },
+  {
+    "b2nPackageId": 4927376938999257,
+    "branchId": "المنطقة الوسطى 2",
+    "node": "الجفرة 35",
+    "amountFrom": 0,
+    "amountTo": 0
+  },
+  {
+    "b2nPackageId": 4927539393262206,
+    "branchId": "غرب طرابلس 2",
+    "node": "زوارة 25",
+    "amountFrom": 0,
+    "amountTo": 0
+  },
+  {
+    "b2nPackageId": 4927539393264453,
+    "branchId": "غرب طرابلس 2",
+    "node": "صبراتة 25",
+    "amountFrom": 0,
+    "amountTo": 0
+  },
+  {
+    "b2nPackageId": 4927539393266582,
+    "branchId": "غرب طرابلس 2",
+    "node": "صرمان 25",
+    "amountFrom": 0,
+    "amountTo": 0
+  },
+  {
+    "b2nPackageId": 492753939327606,
+    "branchId": "غرب طرابلس 2",
+    "node": "بوعيسى 25",
+    "amountFrom": 0,
+    "amountTo": 0
+  },
+  {
+    "b2nPackageId": 4927539898559447,
+    "branchId": "غرب طرابلس 4",
+    "node": "رأس جدير 40",
+    "amountFrom": 0,
+    "amountTo": 0
+  },
+  {
+    "b2nPackageId": 4927539898555983,
+    "branchId": "غرب طرابلس 4",
+    "node": "أبي كماش 40",
+    "amountFrom": 0,
+    "amountTo": 0
+  },
+  {
+    "b2nPackageId": 4927553950777992,
+    "branchId": "المنطقة الشرقية 3",
+    "node": "شحات 40",
+    "amountFrom": 0,
+    "amountTo": 0
+  },
+  {
+    "b2nPackageId": 4927553950780599,
+    "branchId": "المنطقة الشرقية 3",
+    "node": "القبة 40",
+    "amountFrom": 0,
+    "amountTo": 0
+  },
+  {
+    "b2nPackageId": 4927553950774008,
+    "branchId": "المنطقة الشرقية 3",
+    "node": "درنة 40",
+    "amountFrom": 0,
+    "amountTo": 0
+  },
+  {
+    "b2nPackageId": 4927553950772516,
+    "branchId": "المنطقة الشرقية 3",
+    "node": "طبرق 40",
+    "amountFrom": 0,
+    "amountTo": 0
+  },
+  {
+    "b2nPackageId": 4927742868105316,
+    "branchId": "غرب طرابلس 1",
+    "node": "الزاوية 20",
+    "amountFrom": 0,
+    "amountTo": 0
+  },
+  {
+    "b2nPackageId": 5014230705335339,
+    "branchId": "بنغازي 30",
+    "node": "بنغازي 10",
+    "amountFrom": 0,
+    "amountTo": 10
+  },
+  {
+    "b2nPackageId": 5276721837578122,
+    "branchId": "الأصابعة 35",
+    "node": "الأصابعة 35",
+    "amountFrom": 0,
+    "amountTo": 0
+  }
+]

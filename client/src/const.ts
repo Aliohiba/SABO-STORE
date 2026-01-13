@@ -2,7 +2,12 @@ export { COOKIE_NAME, ONE_YEAR_MS } from "@shared/const";
 
 // Generate login URL at runtime so redirect URI reflects the current origin.
 export const getLoginUrl = () => {
-  const oauthPortalUrl = import.meta.env.VITE_OAUTH_PORTAL_URL || window.location.origin;
+  const oauthPortalUrl = import.meta.env.VITE_OAUTH_PORTAL_URL;
+
+  if (!oauthPortalUrl) {
+    return "/admin/login";
+  }
+
   const appId = import.meta.env.VITE_APP_ID || "dev-app";
   const redirectUri = `${window.location.origin}/api/oauth/callback`;
   const state = btoa(redirectUri);

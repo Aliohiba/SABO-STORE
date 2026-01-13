@@ -1,0 +1,73 @@
+[
+  {
+    "id": 1115,
+    "name": "سوبر فانكس بنغازي",
+    "price": 30,
+    "branch": 1,
+    "code": "SBVNX",
+    "locations": [],
+    "branch_region_details": {
+      "id": 1,
+      "name": "طرابلس",
+      "region_comm": "[\"EST\", \"BEN\", \"ESTBN\", \"WSTBNG\", \"STH\"]",
+      "status": 1
+    }
+  },
+  {
+    "id": 1117,
+    "name": "القطرون",
+    "price": 55,
+    "branch": 1,
+    "code": "GTR",
+    "locations": [],
+    "branch_region_details": {
+      "id": 1,
+      "name": "طرابلس",
+      "region_comm": "[\"EST\", \"BEN\", \"ESTBN\", \"WSTBNG\", \"STH\"]",
+      "status": 1
+    }
+  },
+  {
+    "id": 1118,
+    "name": "سوبر فانكس طرابلس",
+    "price": 30,
+    "branch": 1,
+    "code": "SVTIP",
+    "locations": [],
+    "branch_region_details": {
+      "id": 1,
+      "name": "طرابلس",
+      "region_comm": "[\"EST\", \"BEN\", \"ESTBN\", \"WSTBNG\", \"STH\"]",
+      "status": 1
+    }
+  },
+  {
+    "id": 1119,
+    "name": "الشويرف",
+    "price": 35,
+    "branch": 1,
+    "code": "ASF",
+    "locations": [],
+    "branch_region_details": {
+      "id": 1,
+      "name": "طرابلس",
+      "region_comm": "[\"EST\", \"BEN\", \"ESTBN\", \"WSTBNG\", \"STH\"]",
+      "status": 1
+    }
+  },
+  {
+    "id": 1122,
+    "name": "أبو قرين",
+    "price": 30,
+    "branch": 1,
+    "code": "AQN",
+    "locations": [],
+    "branch_region_details": {
+      "id": 1,
+      "name": "طرابلس",
+      "region_comm": "[\"EST\", \"BEN\", \"ESTBN\", \"WSTBNG\", \"STH\"]",
+      "status": 1
+    }
+  }
+  // ... (remaining items omitted for brevity)
+]

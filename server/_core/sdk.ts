@@ -1,3 +1,4 @@
+
 import { AXIOS_TIMEOUT_MS, COOKIE_NAME, ONE_YEAR_MS } from "@shared/const";
 import { ForbiddenError } from "@shared/_core/errors";
 import axios, { type AxiosInstance } from "axios";
@@ -14,7 +15,7 @@ import type {
   GetUserInfoWithJwtRequest,
   GetUserInfoWithJwtResponse,
 } from "./types/manusTypes";
-// Utility function
+
 const isNonEmptyString = (value: unknown): value is string =>
   typeof value === "string" && value.length > 0;
 
@@ -22,6 +23,8 @@ export type SessionPayload = {
   openId: string;
   appId: string;
   name: string;
+  role?: string;
+  permissions?: string[];
 };
 
 const EXCHANGE_TOKEN_PATH = `/webdev.v1.WebDevAuthPublicService/ExchangeToken`;
@@ -113,11 +116,6 @@ class SDKServer {
     return first ? first.toLowerCase() : null;
   }
 
-  /**
-   * Exchange OAuth authorization code for access token
-   * @example
-   * const tokenResponse = await sdk.exchangeCodeForToken(code, state);
-   */
   async exchangeCodeForToken(
     code: string,
     state: string
@@ -125,11 +123,6 @@ class SDKServer {
     return this.oauthService.getTokenByCode(code, state);
   }
 
-  /**
-   * Get user information using access token
-   * @example
-   * const userInfo = await sdk.getUserInfo(tokenResponse.accessToken);
-   */
   async getUserInfo(accessToken: string): Promise<GetUserInfoResponse> {
     const data = await this.oauthService.getUserInfoByToken({
       accessToken,
@@ -159,20 +152,17 @@ class SDKServer {
     return new TextEncoder().encode(secret);
   }
 
-  /**
-   * Create a session token for a Manus user openId
-   * @example
-   * const sessionToken = await sdk.createSessionToken(userInfo.openId);
-   */
   async createSessionToken(
     openId: string,
-    options: { expiresInMs?: number; name?: string } = {}
+    options: { expiresInMs?: number; name?: string; role?: string; permissions?: string[] } = {}
   ): Promise<string> {
     return this.signSession(
       {
         openId,
         appId: ENV.appId,
         name: options.name || "",
+        role: options.role,
+        permissions: options.permissions,
       },
       options
     );
@@ -191,6 +181,8 @@ class SDKServer {
       openId: payload.openId,
       appId: payload.appId,
       name: payload.name,
+      role: payload.role,
+      permissions: payload.permissions,
     })
       .setProtectedHeader({ alg: "HS256", typ: "JWT" })
       .setExpirationTime(expirationSeconds)
@@ -199,7 +191,7 @@ class SDKServer {
 
   async verifySession(
     cookieValue: string | undefined | null
-  ): Promise<{ openId: string; appId: string; name: string } | null> {
+  ): Promise<{ openId: string; appId: string; name: string; role?: string; permissions?: string[] } | null> {
     if (!cookieValue) {
       console.warn("[Auth] Missing session cookie");
       return null;
@@ -210,12 +202,12 @@ class SDKServer {
       const { payload } = await jwtVerify(cookieValue, secretKey, {
         algorithms: ["HS256"],
       });
-      const { openId, appId, name } = payload as Record<string, unknown>;
+      const { openId, appId, name, role, permissions } = payload as Record<string, unknown>;
 
       if (
         !isNonEmptyString(openId) ||
-        !isNonEmptyString(appId) ||
         !isNonEmptyString(name)
+        // appId is optional - it may be empty in dev or for customer sessions
       ) {
         console.warn("[Auth] Session payload missing required fields");
         return null;
@@ -225,6 +217,8 @@ class SDKServer {
         openId,
         appId,
         name,
+        role: role as string | undefined,
+        permissions: permissions as string[] | undefined,
       };
     } catch (error) {
       console.warn("[Auth] Session verification failed", String(error));
@@ -257,10 +251,18 @@ class SDKServer {
   }
 
   async authenticateRequest(req: Request): Promise<User> {
-    // Regular authentication flow
+    // 1. Try reading from Cookies
     const cookies = this.parseCookies(req.headers.cookie);
-    const sessionCookie = cookies.get(COOKIE_NAME);
-    const session = await this.verifySession(sessionCookie);
+    let sessionToken = cookies.get(COOKIE_NAME);
+
+    // 2. Try reading from Authorization Header (Bearer Token)
+    // This overrides cookie if present, useful for mobile/local dev
+    const authHeader = req.headers.authorization;
+    if (authHeader && authHeader.startsWith("Bearer ")) {
+      sessionToken = authHeader.substring(7);
+    }
+
+    const session = await this.verifySession(sessionToken);
 
     if (!session) {
       throw ForbiddenError("Invalid session cookie");
@@ -268,12 +270,39 @@ class SDKServer {
 
     const sessionUserId = session.openId;
     const signedInAt = new Date();
+
+    // 1. Handle Admin Session
+    if (session.role === "admin") {
+      return {
+        openId: session.openId,
+        id: session.openId,
+        name: session.name,
+        email: null,
+        role: "admin",
+        lastSignedIn: signedInAt,
+        loginMethod: "admin",
+      } as any;
+    }
+
+    // 2. Handle Customer Session
+    if (sessionUserId.startsWith("customer_")) {
+      return {
+        openId: session.openId,
+        id: session.openId, // This preserves the 'customer_' prefix which is used in router logic
+        name: session.name,
+        email: null,
+        role: "customer",
+        lastSignedIn: signedInAt,
+        loginMethod: "phone",
+      } as any;
+    }
+
+    // 3. Handle Regular User Session (Fall back to DB lookup in 'users' table)
     let user = await db.getUserByOpenId(sessionUserId);
 
-    // If user not in DB, sync from OAuth server automatically
     if (!user) {
       try {
-        const userInfo = await this.getUserInfoWithJwt(sessionCookie ?? "");
+        const userInfo = await this.getUserInfoWithJwt(sessionToken ?? "");
         await db.upsertUser({
           openId: userInfo.openId,
           name: userInfo.name || null,

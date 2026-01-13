@@ -1,0 +1,22 @@
+--- Store Settings ---
+Cashback Enabled: true
+Cashback %: 2
+Min Order Value: 0
+
+--- LYPAY Orders ---
+
+Order: ORD-1767634135721 (ID: 695bf4d7699f474b4d90ba84)
+Status: pending
+isPaid: true (Type: boolean)
+PaymentMethod: lypay
+CashbackAwarded: false
+UserId: 695ba889a689ca8136ccb2e4
+Logic Check -> isDelivered: false, isPaid: true
+
+Order: ORD-1767620443528 (ID: 695bbf5b21d9ff8dee9dbde2)
+Status: delivered
+isPaid: true (Type: boolean)
+PaymentMethod: lypay
+CashbackAwarded: false
+UserId: 695ba889a689ca8136ccb2e4
+Logic Check -> isDelivered: true, isPaid: true

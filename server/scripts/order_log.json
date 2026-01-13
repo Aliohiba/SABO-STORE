@@ -1,0 +1,14 @@
+{
+  "found": true,
+  "orderNumber": "ORD-1767607065394",
+  "total": 60,
+  "shipping": 10,
+  "paymentDetails": {
+    "walletPaid": 20,
+    "walletDeducted": true,
+    "remainingAmount": 40,
+    "originalMethod": "cash_on_delivery"
+  },
+  "customerId": "6953c3bbff3f7a1f347a9331",
+  "customerBalance": 0
+}

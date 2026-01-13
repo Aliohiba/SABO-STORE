@@ -39,10 +39,14 @@ export function getSessionCookieOptions(
   //       ? hostname
   //       : undefined;
 
+  // Force secure to false in development/localhost environment
+  // This is critical because browsers reject Secure cookies on HTTP (localhost)
+  const isProduction = process.env.NODE_ENV === "production";
+
   return {
     httpOnly: true,
     path: "/",
-    sameSite: "none",
-    secure: isSecureRequest(req),
+    sameSite: "lax",
+    secure: isProduction,
   };
 }

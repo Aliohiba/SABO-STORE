@@ -1,0 +1,331 @@
+[
+    {
+        "b2nPackageId": 4927357524238376,
+        "branchId": "المنطقة الشرقية 2",
+        "node": "المرج 35",
+        "amountFrom": 0,
+        "amountTo": 0
+    },
+    {
+        "b2nPackageId": 4927357524238033,
+        "branchId": "المنطقة الشرقية 2",
+        "node": "الأبيار 35",
+        "amountFrom": 0,
+        "amountTo": 0
+    },
+    {
+        "b2nPackageId": 4927357524239936,
+        "branchId": "المنطقة الشرقية 2",
+        "node": "البيضاء 35",
+        "amountFrom": 0,
+        "amountTo": 0
+    },
+    {
+        "b2nPackageId": 4927360532225729,
+        "branchId": "غرب طرابلس 3",
+        "node": "زلطن 30",
+        "amountFrom": 0,
+        "amountTo": 0
+    },
+    {
+        "b2nPackageId": 4927360532226931,
+        "branchId": "غرب طرابلس 3",
+        "node": "رقدالين 30",
+        "amountFrom": 0,
+        "amountTo": 0
+    },
+    {
+        "b2nPackageId": 4927360532223191,
+        "branchId": "غرب طرابلس 3",
+        "node": "الجميل 30",
+        "amountFrom": 0,
+        "amountTo": 0
+    },
+    {
+        "b2nPackageId": 4927360532224615,
+        "branchId": "غرب طرابلس 3",
+        "node": "العجيلات 30",
+        "amountFrom": 0,
+        "amountTo": 0
+    },
+    {
+        "b2nPackageId": 4927365063646315,
+        "branchId": "شرق طرابلس 1",
+        "node": "القره بولي 20",
+        "amountFrom": 0,
+        "amountTo": 0
+    },
+    {
+        "b2nPackageId": 4927365063645920,
+        "branchId": "شرق طرابلس 1",
+        "node": "قماطة 20",
+        "amountFrom": 0,
+        "amountTo": 0
+    },
+    {
+        "b2nPackageId": 4927365063644614,
+        "branchId": "شرق طرابلس 1",
+        "node": "قصر خيار 20",
+        "amountFrom": 0,
+        "amountTo": 0
+    },
+    {
+        "b2nPackageId": 4927365063641947,
+        "branchId": "شرق طرابلس 1",
+        "node": "الخمس 20",
+        "amountFrom": 0,
+        "amountTo": 0
+    },
+    {
+        "b2nPackageId": 4927365063647254,
+        "branchId": "شرق طرابلس 1",
+        "node": "زليتن 20",
+        "amountFrom": 0,
+        "amountTo": 0
+    },
+    {
+        "b2nPackageId": 4927365063644326,
+        "branchId": "شرق طرابلس 1",
+        "node": "مصراتة 20",
+        "amountFrom": 0,
+        "amountTo": 0
+    },
+    {
+        "b2nPackageId": 4927366219027792,
+        "branchId": "جنوب طرابلس 2",
+        "node": "بني وليد 30",
+        "amountFrom": 0,
+        "amountTo": 0
+    },
+    {
+        "b2nPackageId": 492736621903127,
+        "branchId": "جنوب طرابلس 2",
+        "node": "ترهونة 30",
+        "amountFrom": 0,
+        "amountTo": 0
+    },
+    {
+        "b2nPackageId": 49273667498568,
+        "branchId": "الجبل الغربي 1",
+        "node": "الرابطة 30",
+        "amountFrom": 0,
+        "amountTo": 0
+    },
+    {
+        "b2nPackageId": 4927366749814449,
+        "branchId": "الجبل الغربي 1",
+        "node": "غريان 30",
+        "amountFrom": 0,
+        "amountTo": 0
+    },
+    {
+        "b2nPackageId": 4927368210535821,
+        "branchId": "المنطقة الجنوبية 1",
+        "node": "سبها 35",
+        "amountFrom": 0,
+        "amountTo": 0
+    },
+    {
+        "b2nPackageId": 492736918685516,
+        "branchId": "المنطقة الجنوبية 3",
+        "node": "اوباري 50",
+        "amountFrom": 0,
+        "amountTo": 0
+    },
+    {
+        "b2nPackageId": 4927373862890012,
+        "branchId": "المنطقة الجنوبية 4",
+        "node": "مرزق 60",
+        "amountFrom": 0,
+        "amountTo": 0
+    },
+    {
+        "b2nPackageId": 4927373862887523,
+        "branchId": "المنطقة الجنوبية 4",
+        "node": "غات 60",
+        "amountFrom": 0,
+        "amountTo": 20
+    },
+    {
+        "b2nPackageId": 4927374837815221,
+        "branchId": "الجنوب الشرقي 1",
+        "node": "جالو اوجلة 50",
+        "amountFrom": 0,
+        "amountTo": 0
+    },
+    {
+        "b2nPackageId": 4927374837813943,
+        "branchId": "الجنوب الشرقي 1",
+        "node": "الكفرة 50",
+        "amountFrom": 0,
+        "amountTo": 0
+    },
+    {
+        "b2nPackageId": 4927375126346626,
+        "branchId": "المنطقة الجنوبية 4",
+        "node": "تراغن 60",
+        "amountFrom": 0,
+        "amountTo": 0
+    },
+    {
+        "b2nPackageId": 4927375126350039,
+        "branchId": "المنطقة الجنوبية 4",
+        "node": "العوينات 60",
+        "amountFrom": 0,
+        "amountTo": 0
+    },
+    {
+        "b2nPackageId": 4927375941210310,
+        "branchId": "المنطقة الوسطى 1",
+        "node": "سرت 30",
+        "amountFrom": 0,
+        "amountTo": 0
+    },
+    {
+        "b2nPackageId": 4927375941209892,
+        "branchId": "المنطقة الوسطى 1",
+        "node": "هراوة 30",
+        "amountFrom": 0,
+        "amountTo": 0
+    },
+    {
+        "b2nPackageId": 4927375941208383,
+        "branchId": "المنطقة الوسطى 1",
+        "node": "البريقة 30",
+        "amountFrom": 0,
+        "amountTo": 0
+    },
+    {
+        "b2nPackageId": 4927375941206279,
+        "branchId": "المنطقة الوسطى 1",
+        "node": "رأس لانوف 30",
+        "amountFrom": 0,
+        "amountTo": 0
+    },
+    {
+        "b2nPackageId": 492737594120799,
+        "branchId": "المنطقة الوسطى 1",
+        "node": "اجدابيا 30",
+        "amountFrom": 0,
+        "amountTo": 0
+    },
+    {
+        "b2nPackageId": 4927375941203813,
+        "branchId": "المنطقة الوسطى 1",
+        "node": "بن جواد 30",
+        "amountFrom": 0,
+        "amountTo": 0
+    },
+    {
+        "b2nPackageId": 4927375941202167,
+        "branchId": "المنطقة الوسطى 1",
+        "node": "العقيلة 30",
+        "amountFrom": 0,
+        "amountTo": 0
+    },
+    {
+        "b2nPackageId": 4927375941202914,
+        "branchId": "المنطقة الوسطى 1",
+        "node": "النوفلية 30",
+        "amountFrom": 0,
+        "amountTo": 0
+    },
+    {
+        "b2nPackageId": 4927376938999257,
+        "branchId": "المنطقة الوسطى 2",
+        "node": "الجفرة 35",
+        "amountFrom": 0,
+        "amountTo": 0
+    },
+    {
+        "b2nPackageId": 4927539393262206,
+        "branchId": "غرب طرابلس 2",
+        "node": "زوارة 25",
+        "amountFrom": 0,
+        "amountTo": 0
+    },
+    {
+        "b2nPackageId": 4927539393264453,
+        "branchId": "غرب طرابلس 2",
+        "node": "صبراتة 25",
+        "amountFrom": 0,
+        "amountTo": 0
+    },
+    {
+        "b2nPackageId": 4927539393266582,
+        "branchId": "غرب طرابلس 2",
+        "node": "صرمان 25",
+        "amountFrom": 0,
+        "amountTo": 0
+    },
+    {
+        "b2nPackageId": 492753939327606,
+        "branchId": "غرب طرابلس 2",
+        "node": "بوعيسى 25",
+        "amountFrom": 0,
+        "amountTo": 0
+    },
+    {
+        "b2nPackageId": 4927539898559447,
+        "branchId": "غرب طرابلس 4",
+        "node": "رأس جدير 40",
+        "amountFrom": 0,
+        "amountTo": 0
+    },
+    {
+        "b2nPackageId": 4927539898555983,
+        "branchId": "غرب طرابلس 4",
+        "node": "أبي كماش 40",
+        "amountFrom": 0,
+        "amountTo": 0
+    },
+    {
+        "b2nPackageId": 4927553950777992,
+        "branchId": "المنطقة الشرقية 3",
+        "node": "شحات 40",
+        "amountFrom": 0,
+        "amountTo": 0
+    },
+    {
+        "b2nPackageId": 4927553950780599,
+        "branchId": "المنطقة الشرقية 3",
+        "node": "القبة 40",
+        "amountFrom": 0,
+        "amountTo": 0
+    },
+    {
+        "b2nPackageId": 4927553950774008,
+        "branchId": "المنطقة الشرقية 3",
+        "node": "درنة 40",
+        "amountFrom": 0,
+        "amountTo": 0
+    },
+    {
+        "b2nPackageId": 4927553950772516,
+        "branchId": "المنطقة الشرقية 3",
+        "node": "طبرق 40",
+        "amountFrom": 0,
+        "amountTo": 0
+    },
+    {
+        "b2nPackageId": 4927742868105316,
+        "branchId": "غرب طرابلس 1",
+        "node": "الزاوية 20",
+        "amountFrom": 0,
+        "amountTo": 0
+    },
+    {
+        "b2nPackageId": 5014230705335339,
+        "branchId": "بنغازي 30",
+        "node": "بنغازي 10",
+        "amountFrom": 0,
+        "amountTo": 10
+    },
+    {
+        "b2nPackageId": 5276721837578122,
+        "branchId": "الأصابعة 35",
+        "node": "الأصابعة 35",
+        "amountFrom": 0,
+        "amountTo": 0
+    }
+]

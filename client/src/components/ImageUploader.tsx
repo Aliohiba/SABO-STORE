@@ -34,22 +34,21 @@ const ImageUploader: React.FC<ImageUploaderProps> = ({ onFilesChange, maxFiles =
     <div className="space-y-4">
       <div
         {...getRootProps()}
-        className={`border-2 border-dashed p-8 rounded-lg text-center cursor-pointer transition-colors ${
-          isDragActive ? "border-green-500 bg-green-50" : "border-gray-300 hover:border-gray-400"
-        }`}
+        className={`border-2 border-dashed p-8 rounded-lg text-center cursor-pointer transition-colors ${isDragActive ? "border-primary bg-primary/5" : "border-border hover:border-primary/50"
+          }`}
       >
         <input {...getInputProps()} />
-        <Upload className="mx-auto h-10 w-10 text-gray-400" />
-        <p className="mt-2 text-sm text-gray-600">
+        <Upload className="mx-auto h-10 w-10 text-muted-foreground" />
+        <p className="mt-2 text-sm text-foreground">
           {isDragActive ? "أفلت الملفات هنا..." : "اسحب وأفلت الصور هنا، أو انقر للاختيار"}
         </p>
         <button
           type="button"
-          className="mt-3 inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500"
+          className="mt-3 inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-primary-foreground bg-primary hover:bg-primary/90 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary"
         >
           إضافة صور
         </button>
-        <p className="mt-1 text-xs text-gray-500">
+        <p className="mt-1 text-xs text-muted-foreground">
           (بحد أقصى {maxFiles} صور، المتبقي: {maxFiles - files.length})
         </p>
       </div>
@@ -61,12 +60,12 @@ const ImageUploader: React.FC<ImageUploaderProps> = ({ onFilesChange, maxFiles =
               <img
                 src={URL.createObjectURL(file)}
                 alt={`صورة ${index + 1}`}
-                className="w-full h-32 object-cover rounded-lg border border-gray-200"
+                className="w-full h-32 object-cover rounded-lg border border-border"
               />
               <button
                 type="button"
                 onClick={() => removeFile(file)}
-                className="absolute top-1 right-1 bg-red-500 text-white rounded-full p-1 opacity-0 group-hover:opacity-100 transition-opacity"
+                className="absolute top-1 right-1 bg-destructive text-destructive-foreground rounded-full p-1 opacity-0 group-hover:opacity-100 transition-opacity"
               >
                 <X className="h-4 w-4" />
               </button>

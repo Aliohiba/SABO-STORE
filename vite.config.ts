@@ -11,6 +11,9 @@ const plugins = [react(), tailwindcss(), jsxLocPlugin(), vitePluginManusRuntime(
 
 export default defineConfig({
   plugins,
+  define: {
+    global: "globalThis",
+  },
   resolve: {
     alias: {
       "@": path.resolve(import.meta.dirname, "client", "src"),
@@ -26,7 +29,7 @@ export default defineConfig({
     emptyOutDir: true,
   },
   server: {
-    host: true,
+    host: "localhost",
     allowedHosts: [
       ".manuspre.computer",
       ".manus.computer",

@@ -22,7 +22,7 @@ const RichTextEditor: React.FC<RichTextEditorProps> = ({ initialHtml, onChange }
   };
 
   return (
-    <div className="border border-gray-300 rounded-lg p-2 bg-white min-h-[200px]">
+    <div className="border border-border rounded-lg p-2 bg-card text-card-foreground min-h-[200px]">
       <Editor
         editorState={editorState}
         wrapperClassName="demo-wrapper"
