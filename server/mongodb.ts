@@ -7,10 +7,10 @@ export async function connectMongoDB() {
     console.log("[MongoDB] Already connected");
     return;
   }
-
+  //vhgvhvh
   try {
     const mongoUri = process.env.MONGODB_URI || "mongodb://localhost:27017/online_store";
-    
+
     await mongoose.connect(mongoUri, {
       retryWrites: true,
       w: "majority",
