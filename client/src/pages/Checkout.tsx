@@ -236,7 +236,7 @@ export default function Checkout() {
     e.preventDefault();
 
     if (cartItems.length === 0) {
-      toast.error("السلة فارغة، لا يمكن إتمام الطلب");
+      toast.error(t('checkout_page.cart_empty_error'));
       return;
     }
 
@@ -344,7 +344,7 @@ export default function Checkout() {
                         orderId: String(orderId),
                         transaction: data
                       });
-                      toast.success("تم تأكيد عملية الدفع بنجاح");
+                      toast.success(t('checkout_page.payment_confirmed_success'));
                     } catch (err) {
                       console.error("Failed to confirm payment status", err);
                     }
@@ -352,26 +352,26 @@ export default function Checkout() {
                   },
                   errorCallback: function (error: any) {
                     console.error("Payment Error:", error);
-                    toast.error("حدث خطأ أثناء الدفع، يرجى المحاولة مرة أخرى.");
+                    toast.error(t('checkout_page.payment_error'));
                   },
                   cancelCallback: function () {
                     console.log("Payment Cancelled");
-                    toast.info("تم إلغاء عملية الدفع.");
+                    toast.info(t('checkout_page.payment_cancelled'));
                   },
                 };
 
                 window.Lightbox.Checkout.showLightbox();
               } else {
                 console.error("Lightbox script not loaded");
-                toast.error("Payment gateway not loaded properly.");
+                toast.error(t('checkout_page.gateway_assist_error'));
               }
             } catch (error) {
               console.error("Failed to initiate payment:", error);
-              toast.error("فشل في بدء عملية الدفع.");
+              toast.error(t('checkout_page.initiate_payment_failed'));
             }
           } else if (paymentMethod === 'lypay') {
             // Placeholder for LYPAY integration
-            toast.success("تم استلام طلبك. يرجى إتمام عملية الدفع عبر LYPAY.");
+            toast.success(t('checkout_page.lypay_success_msg'));
             setLocation(`/order-confirmation/${orderId}`);
           } else {
             // Cash on Delivery
@@ -446,7 +446,7 @@ export default function Checkout() {
               {/* Delivery Provider Selection (Only if Delivery is selected) */}
               {deliveryMethod === 'delivery' && providers.length > 0 && (
                 <div className="mb-6 animate-in fade-in slide-in-from-top-2">
-                  <label className="block text-sm font-medium mb-4">تسليم عن طريق</label>
+                  <label className="block text-sm font-medium mb-4">{t('checkout_page.delivered_by')}</label>
                   <div className="grid grid-cols-2 gap-4">
                     {providers.map((p: any) => {
                       return (
@@ -539,18 +539,18 @@ export default function Checkout() {
                       {customerCity && (
                         <div className="space-y-1">
                           <p className="font-medium">
-                            <span className="text-gray-600">المدينة:</span>{' '}
+                            <span className="text-gray-600">{t('checkout_page.city_label')}</span>{' '}
                             <span className="text-gray-900">{customerCity.name}</span>
                           </p>
                           {formData.area && (
                             <p className="text-sm">
-                              <span className="text-gray-600">المنطقة:</span>{' '}
+                              <span className="text-gray-600">{t('checkout_page.area_label')}</span>{' '}
                               <span className="text-gray-900">{formData.area}</span>
                             </p>
                           )}
                           {shippingPrice > 0 && (
                             <p className="font-bold text-primary text-lg mt-2">
-                              سعر التوصيل: {shippingPrice} د.ل
+                              {t('checkout_page.shipping_price_label')} {shippingPrice} د.ل
                             </p>
                           )}
                         </div>
@@ -618,7 +618,7 @@ export default function Checkout() {
                           disabled={isFetchingCities || cities.length === 0}
                         >
                           <option value="">
-                            {isFetchingCities ? "جاري تحميل المدن..." : t('checkout_page.select_city')}
+                            {isFetchingCities ? t('common.loading') : t('checkout_page.select_city')}
                           </option>
                           {cities.map((city: any) => (
                             <option key={city.id} value={city.id}>
@@ -627,7 +627,7 @@ export default function Checkout() {
                           ))}
                         </select>
                         {cities.length === 0 && !isFetchingCities && providerId && (
-                          <p className="text-xs text-amber-600 mt-1">لا توجد مدن متاحة لهذه الشركة حالياً.</p>
+                          <p className="text-xs text-amber-600 mt-1">{t('checkout_page.no_cities_available')}</p>
                         )}
                       </div>
 
@@ -695,12 +695,12 @@ export default function Checkout() {
                               area: formData.area || undefined,
                               address: formData.customerAddress || undefined,
                             });
-                            toast.success('تم حفظ التغييرات بنجاح');
+                            toast.success(t('checkout_page.order_success').replace('order', 'changes'));
                             await refetchCustomer();
                             setShowAddressForm(false);
                           } catch (error) {
                             console.error('Failed to update profile:', error);
-                            toast.error('فشل حفظ التغييرات');
+                            toast.error(t('checkout_page.order_failed').replace('order', 'changes'));
                           }
                         }}
                         disabled={updateProfile.isPending}
@@ -752,11 +752,11 @@ export default function Checkout() {
                         className="hidden"
                       />
                       <div className="flex-1">
-                        <div className="font-bold text-purple-900">استخدم رصيد المحفظة</div>
+                        <div className="font-bold text-purple-900">{t('checkout_page.use_wallet')}</div>
                         <div className="text-sm text-purple-700 mt-1">
-                          رصيدك الحالي: <span className="font-bold" dir="ltr">{walletData.balance.toFixed(2)} د.ل</span>
+                          {t('checkout_page.current_balance')} <span className="font-bold" dir="ltr">{walletData.balance.toFixed(2)} د.ل</span>
                           {useWalletPartial && (
-                            <span className="block mt-1">سيتم خصم: <span className="font-bold">{walletDeduction.toFixed(2)} د.ل</span></span>
+                            <span className="block mt-1">{t('checkout_page.will_be_deducted')} <span className="font-bold">{walletDeduction.toFixed(2)} د.ل</span></span>
                           )}
                         </div>
                       </div>
@@ -765,13 +765,13 @@ export default function Checkout() {
                 )}
 
                 {!isFullyCoveredByWallet && useWalletPartial && (
-                  <div className="mb-2 text-sm text-gray-500 font-medium">اختر طريقة دفع للمبلغ المتبقي: <span className="text-black font-bold">{remainingTotal.toFixed(2)} د.ل</span></div>
+                  <div className="mb-2 text-sm text-gray-500 font-medium">{t('checkout_page.select_payment_for_remaining')} <span className="text-black font-bold">{remainingTotal.toFixed(2)} د.ل</span></div>
                 )}
 
                 {isFullyCoveredByWallet && (
                   <div className="p-4 bg-green-50 border border-green-200 rounded-lg text-green-800 font-medium flex items-center gap-2 mb-4">
                     <CheckCircle className="h-5 w-5" />
-                    سيتم تغطية كامل المبلغ من رصيد المحفظة.
+                    {t('checkout_page.full_wallet_coverage')}
                   </div>
                 )}
 
@@ -800,7 +800,7 @@ export default function Checkout() {
                         </div>
                         <div className="text-center z-10">
                           <span className="font-bold block text-gray-900 text-xl">{t('checkout_page.cod')}</span>
-                          <span className="text-sm text-gray-500">الدفع نقداً عند الاستلام</span>
+                          <span className="text-sm text-gray-500">{t('checkout_page.cod_desc')}</span>
                         </div>
                       </div>
                     </div>
@@ -818,7 +818,7 @@ export default function Checkout() {
                       {/* Badge - Top Right */}
                       <div className="absolute top-0 right-0 transform translate-x-2 -translate-y-3 z-20">
                         <span className="bg-yellow-400 text-yellow-900 text-xs font-black px-2 py-1 rounded-full shadow-md flex items-center gap-1 border border-yellow-200 animate-pulse">
-                          نفس سعر الكاش
+                          {t('checkout_page.same_as_cash')}
                         </span>
                       </div>
 
@@ -837,7 +837,7 @@ export default function Checkout() {
                         </div>
                         <div className="text-center z-10">
                           <span className="font-bold block text-gray-900 text-xl">{t('checkout_page.moamalat')}</span>
-                          <span className="text-sm text-gray-500">ادفع ببطاقتك المصرفية</span>
+                          <span className="text-sm text-gray-500">{t('checkout_page.moamalat_desc')}</span>
                         </div>
                       </div>
                     </div>
@@ -874,7 +874,7 @@ export default function Checkout() {
                         </div>
                         <div className="text-center z-10">
                           <span className="font-bold block text-gray-900 text-xl">{t('checkout_page.lypay')}</span>
-                          <span className="text-sm text-gray-500">دفع فوري</span>
+                          <span className="text-sm text-gray-500">{t('checkout_page.lypay_desc')}</span>
                         </div>
                       </div>
                     </div>
@@ -883,12 +883,34 @@ export default function Checkout() {
                   {/* Warning if no payment method available */}
                   {(storeSettings?.paymentMethods && !storeSettings.paymentMethods.cash_on_delivery && !storeSettings.paymentMethods.moamalat && !storeSettings.paymentMethods.lypay) && (
                     <div className="p-4 bg-red-50 text-red-600 border border-red-200 rounded-lg text-center">
-                      لا توجد طرق دفع متاحة حالياً. يرجى التواصل مع الإدارة.
+                      {t('checkout_page.no_payment_methods')}
                     </div>
                   )}
 
                 </div>
               </div>
+
+              {/* LYPAY QR Code Display */}
+              {paymentMethod === 'lypay' && (
+                <div className="bg-white p-6 rounded-lg border border-teal-200 shadow-sm mt-6 text-center animate-in fade-in zoom-in duration-300">
+                  <h3 className="font-bold text-lg text-teal-800 mb-2">{t('checkout_page.scan_qr_title', 'امسح الرمز للدفع')}</h3>
+                  <p className="text-sm text-gray-600 mb-4">{t('checkout_page.scan_qr_desc', 'قم بمسح رمز QR التالي باستخدام تطبيق LYPAY لإتمام عملية الدفع')}</p>
+
+                  <div className="flex justify-center mb-4">
+                    <div className="p-2 border-2 border-teal-500 rounded-xl bg-white shadow-md">
+                      <img
+                        src="/lypay-qr-code.png"
+                        alt="LYPAY QR Code"
+                        className="w-48 h-48 object-contain"
+                      />
+                    </div>
+                  </div>
+
+                  <div className="text-sm text-teal-700 bg-teal-50 p-3 rounded-md inline-block">
+                    {t('checkout_page.lypay_confirm_hint', 'بعد إتمام الدفع، اضغط على زر "تأكيد الطلب" في الأسفل')}
+                  </div>
+                </div>
+              )}
 
               <Button
                 type="submit"
@@ -930,14 +952,14 @@ export default function Checkout() {
 
               {useWalletPartial && walletDeduction > 0 && (
                 <div className="flex justify-between mb-2 text-purple-700">
-                  <span className="font-medium">مدفوع من المحفظة</span>
+                  <span className="font-medium">{t('checkout_page.paid_from_wallet')}</span>
                   <span className="font-bold">- {walletDeduction.toFixed(2)} د.ل</span>
                 </div>
               )}
 
               {useWalletPartial && (
                 <div className="flex justify-between mb-4 pt-2 border-t border-dashed">
-                  <span className="font-bold text-lg">المتبقي للدفع</span>
+                  <span className="font-bold text-lg">{t('checkout_page.remaining_to_pay')}</span>
                   <span className="font-bold text-lg text-green-600">د.ل {remainingTotal.toFixed(2)}</span>
                 </div>
               )}
@@ -950,9 +972,9 @@ export default function Checkout() {
                       <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clipRule="evenodd" />
                     </svg>
                     <div className="flex-1">
-                      <p className="text-sm font-semibold text-amber-900">تكلفة التوصيل</p>
+                      <p className="text-sm font-semibold text-amber-900">{t('checkout_page.shipping_cost_title')}</p>
                       <p className="text-xs text-amber-700 mt-1">
-                        <span className="font-bold">{shipping} د.ل</span> - تُدفع لشركة التوصيل عند الاستلام
+                        <span className="font-bold">{shipping} د.ل</span> - {t('checkout_page.paid_to_delivery')}
                       </p>
                     </div>
                   </div>

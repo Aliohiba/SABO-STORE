@@ -6,6 +6,7 @@ import { trpc } from "@/lib/trpc";
 import { toast } from "sonner";
 import { useTranslation } from "react-i18next";
 import LanguageSwitcher from "@/components/LanguageSwitcher";
+import ThemeToggle from "@/components/ThemeToggle";
 
 export default function Register() {
     const { t, i18n } = useTranslation();
@@ -115,7 +116,8 @@ export default function Register() {
     return (
         <div className="min-h-screen bg-background flex items-center justify-center p-4">
             <div className="bg-card rounded-lg shadow-lg p-6 md:p-8 w-full max-w-2xl border border-border relative">
-                <div className="absolute top-4 left-4 rtl:right-4 rtl:left-auto">
+                <div className="absolute top-4 left-4 rtl:right-4 rtl:left-auto flex items-center gap-2">
+                    <ThemeToggle />
                     <LanguageSwitcher />
                 </div>
                 <div className="text-center mb-6">

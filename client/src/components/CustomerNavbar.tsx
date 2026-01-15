@@ -171,7 +171,7 @@ export default function CustomerNavbar({ showSearch = false }: CustomerNavbarPro
                         <div className="relative flex items-center w-full group">
                             <input
                                 type="text"
-                                placeholder="بحث في المنتجات..."
+                                placeholder={t('nav.search')}
                                 value={searchQuery}
                                 onChange={(e) => {
                                     setSearchQuery(e.target.value);
@@ -246,21 +246,21 @@ export default function CustomerNavbar({ showSearch = false }: CustomerNavbarPro
                     </div>
 
                     <Link href="/products">
-                        <Button variant="ghost" size="icon" className="group relative rounded-full w-10 h-10 md:w-11 md:h-11 hover:bg-primary/10 hover:text-primary transition-all duration-300">
+                        <Button variant="ghost" className="group relative rounded-full h-10 md:h-11 px-4 hover:bg-primary/10 hover:text-primary transition-all duration-300 gap-2">
                             <Package className="h-5 w-5 md:h-6 md:w-6 stroke-[1.5]" />
-                            <span className="sr-only">{t('nav.home')}</span>
+                            <span className="font-semibold text-base">المنتجات</span>
                         </Button>
                     </Link>
 
                     <Link href="/cart">
-                        <Button variant="ghost" size="icon" className="group relative rounded-full w-10 h-10 md:w-11 md:h-11 hover:bg-primary/10 hover:text-primary transition-all duration-300">
+                        <Button variant="ghost" className="group relative rounded-full h-10 md:h-11 px-4 hover:bg-primary/10 hover:text-primary transition-all duration-300 gap-2">
                             <ShoppingCart className="h-5 w-5 md:h-6 md:w-6 stroke-[1.5]" />
                             {cartCount > 0 && (
                                 <span className="absolute -top-1 -right-1 bg-destructive text-destructive-foreground text-xs font-bold rounded-full h-5 w-5 flex items-center justify-center animate-pulse">
                                     {cartCount > 99 ? '99+' : cartCount}
                                 </span>
                             )}
-                            <span className="sr-only">{t('nav.cart')}</span>
+                            <span className="font-semibold text-base">السلة</span>
                         </Button>
                     </Link>
 
@@ -280,9 +280,9 @@ export default function CustomerNavbar({ showSearch = false }: CustomerNavbarPro
                     {/* Orders Icon - Only for authenticated customers */}
                     {isAuthenticated && (
                         <Link href="/my-orders">
-                            <Button variant="ghost" size="icon" className="group relative rounded-full w-10 h-10 md:w-11 md:h-11 hover:bg-primary/10 hover:text-primary transition-all duration-300">
+                            <Button variant="ghost" className="group relative rounded-full h-10 md:h-11 px-4 hover:bg-primary/10 hover:text-primary transition-all duration-300 gap-2">
                                 <Clock className="h-5 w-5 md:h-6 md:w-6 stroke-[1.5]" />
-                                <span className="sr-only">{t('nav.my_orders')}</span>
+                                <span className="font-semibold text-base">طلباتي</span>
                             </Button>
                         </Link>
                     )}
@@ -290,9 +290,9 @@ export default function CustomerNavbar({ showSearch = false }: CustomerNavbarPro
                     {/* Admin Dashboard - Only for admins */}
                     {isAdmin && (
                         <Link href="/admin/dashboard">
-                            <Button variant="ghost" size="icon" className="group relative rounded-full w-10 h-10 md:w-11 md:h-11 hover:bg-primary/10 hover:text-primary transition-all duration-300">
+                            <Button variant="ghost" className="group relative rounded-full h-10 md:h-11 px-4 hover:bg-primary/10 hover:text-primary transition-all duration-300 gap-2">
                                 <LayoutDashboard className="h-6 w-6 md:h-7 md:w-7 stroke-[1.5]" />
-                                <span className="sr-only">{t('nav.dashboard')}</span>
+                                <span className="font-semibold text-base">لوحة التحكم</span>
                             </Button>
                         </Link>
                     )}

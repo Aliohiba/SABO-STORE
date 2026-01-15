@@ -21,9 +21,10 @@ import { sendEmail, generateOrderConfirmationEmail, generateOrderStatusEmail } f
 connectMongoDB().catch(err => console.error("[MongoDB] Failed to connect:", err));
 import bcrypt from "bcryptjs";
 import { TRPCError } from "@trpc/server";
-import { Order, OrderItem, Customer, WalletTransaction, StoreSettings, Product, CartItem, OrderSettings } from "./schemas";
+import { Order, OrderItem, Customer, WalletTransaction, StoreSettings, Product, CartItem, OrderSettings, ExchangeRateCache } from "./schemas";
 import { City } from "./schemas-extended";
 import mongoose from "mongoose";
+import axios from "axios";
 
 // Admin procedure that checks for admin role
 const adminProcedure = protectedProcedure.use(({ ctx, next }) => {
@@ -792,39 +793,38 @@ export const baseRouter = router({
               console.error(`Failed to deduct stock for product ${item.productId}`, err);
             }
           }
-        }
 
-        // Clear cart for both logged-in users and guests after successful order creation
-        if (ctx.user?.id) {
-          try {
-            await db.clearCart(ctx.user.id);
-            console.log(`Cart cleared for user ${ctx.user.id} after order creation`);
-          } catch (err) {
-            console.error(`Failed to clear cart for user ${ctx.user.id}:`, err);
+          // Clear cart for both logged-in users and guests after successful order creation
+          if (ctx.user?.id) {
+            try {
+              await db.clearCart(ctx.user.id);
+              console.log(`Cart cleared for user ${ctx.user.id} after order creation`);
+            } catch (err) {
+              console.error(`Failed to clear cart for user ${ctx.user.id}:`, err);
+            }
+          }
+
+          // Send order confirmation email
+          if (customerEmail && order) {
+            const orderItems = finalItems.map(item => ({
+              name: item.productName,
+              quantity: item.quantity,
+              price: Number(item.price)
+            }));
+
+            sendEmail({
+              to: customerEmail,
+              subject: `تأكيد الطلب #${orderNumber} - متجر سابو`,
+              html: generateOrderConfirmationEmail(
+                orderNumber,
+                trackingKey,
+                customerName || 'العميل',
+                finalTotal,
+                orderItems
+              )
+            }).catch(err => console.error('Email error:', err));
           }
         }
-
-        // Send order confirmation email
-        if (customerEmail && order) {
-          const orderItems = finalItems.map(item => ({
-            name: item.productName,
-            quantity: item.quantity,
-            price: Number(item.price)
-          }));
-
-          sendEmail({
-            to: customerEmail,
-            subject: `تأكيد الطلب #${orderNumber} - متجر سابو`,
-            html: generateOrderConfirmationEmail(
-              orderNumber,
-              trackingKey,
-              customerName || 'العميل',
-              finalTotal,
-              orderItems
-            )
-          }).catch(err => console.error('Email error:', err));
-        }
-
         return order;
       }),
 
@@ -1226,6 +1226,105 @@ export const baseRouter = router({
         const endDate = new Date(input.endDate);
         return db.getDetailedSalesReport(startDate, endDate);
       }),
+
+    getExchangeRates: adminProcedure.query(async () => {
+      const API_KEY = "48|7CUxhvKerwK3BKcgF1DQht86KjEAVqrYs6N0LDQwdca80521";
+      // We target the USD endpoint as our primary "Source of Truth" for the daily fetch
+      const API_URL = "https://fulus.ly/api/v1/rates/current?currency=USD&rate_type=cash";
+      const CACHE_KEY = "fulus_rates_daily";
+
+      // Fallback/Mock Data (Approximate Market Rates) to use when limit is reached or API fails
+      const MOCK_DATA = [
+        { currency: "USD", name: "الدولار الأمريكي", rate: 6.95, lastUpdated: new Date() },
+        { currency: "EUR", name: "اليورو", rate: 7.25, lastUpdated: new Date() },
+        { currency: "GBP", name: "الجنيه الإسترليني", rate: 8.60, lastUpdated: new Date() }
+      ];
+
+      try {
+        // 1. Check Cache
+        const cache = await ExchangeRateCache.findOne({ key: CACHE_KEY });
+        const now = new Date();
+        const oneDayMs = 24 * 60 * 60 * 1000;
+
+        if (cache && cache.lastUpdated) {
+          const age = now.getTime() - new Date(cache.lastUpdated).getTime();
+          // If valid cache exists (less than 24h) and it's not an error response
+          if (age < oneDayMs && cache.data && !cache.data.error) {
+            console.log(`[ExchangeRates] Returning cached data (Age: ${(age / 1000 / 60).toFixed(1)} mins)`);
+            return cache.data;
+          }
+        }
+
+        // 2. Fetch from API if cache expired or missing
+        console.log("Fetching exchange rates from Fulus API...");
+        const response = await axios.get(API_URL, {
+          headers: {
+            "Authorization": `Bearer ${API_KEY}`,
+            "Accept": "application/json"
+          },
+          validateStatus: (status) => status < 500 // Resolve 429/400 to handle in logic
+        });
+
+        let finalData = [];
+
+        // Check for Rate Limit or Success
+        if (response.status === 429 || (response.data && response.data.message && response.data.message.includes("limit"))) {
+          console.warn(`[ExchangeRates] Rate Limit Reached: ${response.data.message || '429 Error'}. Using MOCK data.`);
+          // If we have OLD cache, use that if available, else mock
+          if (cache && cache.data) {
+            console.log("Using stale cache due to rate limit.");
+            return cache.data;
+          }
+          finalData = MOCK_DATA;
+        } else if (response.data && response.data.data) {
+          // Success! We got USD.
+          // Since we can only make 1 request, we will infer/mock EUR/GBP relative to USD or just include the single real rate
+          const realUsd = response.data.data.rate;
+
+          finalData = [
+            {
+              currency: "USD",
+              name: "الدولار الأمريكي",
+              rate: realUsd,
+              lastUpdated: new Date(response.data.data.timestamp || new Date())
+            },
+            // Estimate others based on typical ratios relative to 6.95 baseline if we can't fetch them, 
+            // or just use our hardcoded estimates
+            { currency: "EUR", name: "اليورو", rate: 7.25, lastUpdated: new Date() },
+            { currency: "GBP", name: "الجنيه الإسترليني", rate: 8.60, lastUpdated: new Date() }
+          ];
+
+          console.log(`[ExchangeRates] Fetched Real USD: ${realUsd}`);
+        } else {
+          console.warn("[ExchangeRates] Unexpected API Response:", response.data);
+          finalData = MOCK_DATA;
+        }
+
+        // 3. Update Cache
+        // We cache whatever we decided to return (Real or Mock) to act as the "Daily" value
+        await ExchangeRateCache.findOneAndUpdate(
+          { key: CACHE_KEY },
+          {
+            data: finalData,
+            lastUpdated: now
+          },
+          { upsert: true, new: true }
+        );
+
+        return finalData;
+
+      } catch (error: any) {
+        console.error("Exchange Rate API Error:", error.message);
+
+        // Fallback: Return Stale Cache or Mock
+        const oldCache = await ExchangeRateCache.findOne({ key: CACHE_KEY });
+        if (oldCache && oldCache.data) {
+          return oldCache.data;
+        }
+
+        return MOCK_DATA;
+      }
+    }),
   }),
 
   // ==================== VANEX Router ====================
@@ -1482,6 +1581,110 @@ export const baseRouter = router({
           await settings.save();
         }
         return settings;
+      }),
+  }),
+
+  // Support API
+  support: router({
+    create: publicProcedure
+      .input(z.object({
+        name: z.string(),
+        email: z.string().email(),
+        subject: z.string(),
+        message: z.string(),
+      }))
+      .mutation(async ({ input, ctx }) => {
+        let customerId: string | undefined = undefined;
+        // Check for authenticated customer in context
+        if (ctx.user && typeof ctx.user.id === 'string' && ctx.user.id.startsWith('customer_')) {
+          customerId = ctx.user.id.replace('customer_', '');
+        }
+        return db.createSupportMessage({ ...input, customerId } as any);
+      }),
+
+    list: adminProcedure.query(async () => {
+      return db.getAllSupportMessages();
+    }),
+
+    myMessages: customerProcedure.query(async ({ ctx }) => {
+      let openId = ctx.user.id;
+      let customerId = openId;
+      if (openId.startsWith('customer_')) {
+        customerId = openId.replace('customer_', '');
+      }
+
+      // Fetch customer to get real email
+      const customer = await db.getCustomerById(customerId);
+      const email = customer?.email;
+
+      console.log(`[Support] Fetching messages for CustomerID: ${customerId}, Email: ${email}`);
+
+      return db.getSupportMessagesForUser(email, customerId);
+    }),
+
+    reply: adminProcedure
+      .input(z.object({
+        id: z.string(),
+        reply: z.string(),
+      }))
+      .mutation(async ({ input }) => {
+        const message = await db.getSupportMessageById(input.id);
+        if (!message) throw new TRPCError({ code: "NOT_FOUND", message: "Message not found" });
+        // Send email
+        await sendEmail({
+          to: message.email,
+          subject: `رد على: ${message.subject}`,
+          html: `<div dir="rtl">
+             <h2>رد على استفسارك</h2>
+             <p>مرحباً ${message.name}،</p>
+             <p>${input.reply.replace(/\n/g, '<br>')}</p>
+             <hr>
+             <p><small>رداً على رسالتك بتاريخ ${message.createdAt.toLocaleDateString('ar-LY')}:</small></p>
+             <blockquote style="border-right: 2px solid #ccc; padding-right: 10px; margin-right: 0; color: #666;">
+               ${message.message}
+             </blockquote>
+           </div>`
+        });
+
+        console.log(`[Support] Sent reply to ${message.email}`);
+
+        return db.updateSupportMessage(input.id, {
+          reply: input.reply,
+          status: 'replied',
+          repliedAt: new Date()
+        });
+      }),
+
+    sendEmail: adminProcedure
+      .input(z.object({
+        to: z.string().email(),
+        subject: z.string(),
+        body: z.string(),
+      }))
+      .mutation(async ({ input }) => {
+        console.log(`[Support] Sending outbound email to ${input.to}: ${input.subject}`);
+
+        const success = await sendEmail({
+          to: input.to,
+          subject: input.subject,
+          html: `<div dir="rtl"><p>${input.body.replace(/\n/g, '<br>')}</p></div>`
+        });
+
+        if (!success) {
+          throw new TRPCError({ code: "INTERNAL_SERVER_ERROR", message: "Failed to send email" });
+        }
+
+        // Save to database as outbound message
+        await db.createSupportMessage({
+          name: "Sabo Store Support", // Or fetch admin name if available, but "Support" is safer
+          email: input.to, // Save under recipient's email so they can see it
+          subject: input.subject,
+          message: input.body,
+          status: "replied", // It's technically 'filled' by admin
+          direction: "outbound"
+        } as any);
+
+        return { success: true };
       }),
   }),
 

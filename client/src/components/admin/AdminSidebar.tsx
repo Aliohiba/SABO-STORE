@@ -3,7 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Link, useLocation } from "wouter";
 import { Home, Package, ShoppingCart, Settings, LogOut, Users, Truck, Mail, Percent, Plus, ListChecks, ExternalLink, LayoutDashboard, DollarSign, Menu, X, UserCog, Palette, Sun, Moon } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
-import { useTheme } from "@/contexts/ThemeContext";
+
 
 interface AdminSidebarProps {
   activePath?: string;
@@ -12,7 +12,7 @@ interface AdminSidebarProps {
 export default function AdminSidebar({ activePath }: AdminSidebarProps) {
   const [, setLocation] = useLocation();
   const [isMobileOpen, setIsMobileOpen] = useState(false);
-  const { theme, toggleTheme } = useTheme();
+
 
   const handleLogout = () => {
     localStorage.removeItem("adminToken");
@@ -134,47 +134,8 @@ export default function AdminSidebar({ activePath }: AdminSidebarProps) {
         {/* Footer */}
         <div className="p-3 border-t border-blue-800 bg-blue-900 mt-auto">
           {/* Theme Toggle Switch */}
-          <div className="flex justify-center mb-4">
-            <div
-              onClick={() => toggleTheme && toggleTheme()}
-              className={`
-                    relative w-28 h-9 rounded-full cursor-pointer p-1 transition-all duration-500 border flex items-center
-                    ${theme === 'dark' ? 'bg-zinc-950 border-zinc-800 justify-end' : 'bg-blue-800/50 border-blue-700/50 hover:bg-blue-800 justify-start'}
-                `}
-              title={theme === 'dark' ? 'تبديل للوضع النهاري' : 'تبديل للوضع الليلي'}
-            >
-              <div className="absolute inset-0 flex justify-between items-center px-3 text-[12px] font-medium pointer-events-none select-none">
-                <span className={`transition-opacity duration-300 ${theme === 'dark' ? 'opacity-100 text-white' : 'opacity-0'}`}>Dark</span>
-                <span className={`transition-opacity duration-300 ${theme === 'dark' ? 'opacity-0' : 'opacity-100 text-blue-200'}`}>Light</span>
-              </div>
+          {/* Theme Toggle Switch */}
 
-              <motion.div
-                className="w-7 h-7 rounded-full shadow-md flex items-center justify-center relative z-10"
-                layout
-                transition={{ type: "spring", stiffness: 700, damping: 30 }}
-                animate={{
-                  backgroundColor: theme === 'dark' ? 'var(--background)' : '#ffffff'
-                }}
-              >
-                <AnimatePresence mode="wait" initial={false}>
-                  <motion.div
-                    key={theme}
-                    initial={{ opacity: 0, rotate: -90, scale: 0 }}
-                    animate={{ opacity: 1, rotate: 0, scale: 1 }}
-                    exit={{ opacity: 0, rotate: 90, scale: 0 }}
-                    transition={{ duration: 0.2 }}
-                    className="flex items-center justify-center"
-                  >
-                    {theme === 'dark' ? (
-                      <Moon className="w-4 h-4 text-blue-400 fill-blue-400" />
-                    ) : (
-                      <Sun className="w-4 h-4 text-orange-500 fill-orange-500" />
-                    )}
-                  </motion.div>
-                </AnimatePresence>
-              </motion.div>
-            </div>
-          </div>
 
           <div className="flex items-center gap-2 px-2 mb-2">
             <div className="w-8 h-8 rounded-full bg-blue-800 flex items-center justify-center text-blue-200 font-bold text-sm border border-blue-700">

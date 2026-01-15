@@ -6,6 +6,7 @@ import { trpc } from "@/lib/trpc";
 import { toast } from "sonner";
 import { useTranslation } from "react-i18next";
 import LanguageSwitcher from "@/components/LanguageSwitcher";
+import ThemeToggle from "@/components/ThemeToggle";
 import { guestCart } from "@/lib/guestCart";
 
 export default function Login() {
@@ -22,7 +23,7 @@ export default function Login() {
         e.preventDefault();
 
         if (!identifier || !password) {
-            toast.error(t('common.fill_required') || "Please fill all required fields");
+            toast.error(t('common.fill_required'));
             return;
         }
 
@@ -44,14 +45,14 @@ export default function Login() {
                 {
                     onSuccess: (data) => {
                         toast.dismiss(loadingToast);
-                        toast.success(t('login.success_admin') || "Logged in as admin");
+                        toast.success(t('login.success_admin'));
                         localStorage.setItem("adminToken", "true");
                         // استخدام window.location.href لضمان تحميل الحالة الجديدة من الخادم
                         window.location.href = "/admin/dashboard";
                     },
                     onError: (err) => {
                         toast.dismiss(loadingToast);
-                        toast.error(err.message || t('login.invalid_credentials') || "Invalid credentials");
+                        toast.error(err.message || t('login.invalid_credentials'));
                     },
                 }
             );
@@ -67,7 +68,7 @@ export default function Login() {
                         const guestItems = guestCart.getItems();
 
                         if (guestItems.length > 0) {
-                            toast.success(`${t('login.success')} - جاري دمج السلة...`);
+                            toast.success(`${t('login.success')} - ${t('login.merging_cart')}`);
 
                             try {
                                 // Merge guest cart with user cart
@@ -81,13 +82,13 @@ export default function Login() {
                                 // Clear guest cart
                                 guestCart.clear();
 
-                                toast.success(`تم دمج ${guestItems.length} منتج من السلة المحلية`);
+                                toast.success(t('login.cart_merged', { count: guestItems.length }));
                             } catch (error) {
                                 console.error('[Login] Failed to merge cart:', error);
-                                toast.error('فشل دمج السلة، ولكن تم تسجيل الدخول بنجاح');
+                                toast.error(t('login.cart_merge_failed'));
                             }
                         } else {
-                            toast.success(t('login.success') || "Logged in successfully");
+                            toast.success(t('login.success'));
                         }
 
                         // Store token in localStorage
@@ -114,7 +115,8 @@ export default function Login() {
     return (
         <div className="min-h-screen bg-background flex items-center justify-center p-4">
             <div className="bg-card rounded-xl shadow-lg p-8 w-full max-w-md border border-border relative">
-                <div className="absolute top-4 left-4 rtl:right-4 rtl:left-auto">
+                <div className="absolute top-4 left-4 rtl:right-4 rtl:left-auto flex items-center gap-2">
+                    <ThemeToggle />
                     <LanguageSwitcher />
                 </div>
                 <div className="text-center mb-8">

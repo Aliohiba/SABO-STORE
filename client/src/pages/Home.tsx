@@ -106,14 +106,14 @@ export default function Home() {
                 <div className="text-center md:text-right">
                   <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-destructive/10 border border-destructive/20 mb-3">
                     <Clock className="w-4 h-4 text-destructive animate-pulse" />
-                    <span className="text-destructive font-bold tracking-wide text-xs uppercase">Limited Time Offers</span>
+                    <span className="text-destructive font-bold tracking-wide text-xs uppercase">{t('home_page.limited_time_offers')}</span>
                   </div>
-                  <h2 className="text-3xl md:text-5xl font-bold text-foreground mb-2 leading-tight">عروض حصرية</h2>
-                  <p className="text-muted-foreground text-lg">اغتنم الفرصة قبل انتهاء الوقت ونفاد الكمية!</p>
+                  <h2 className="text-3xl md:text-5xl font-bold text-foreground mb-2 leading-tight">{t('home_page.exclusive_offers')}</h2>
+                  <p className="text-muted-foreground text-lg">{t('home_page.exclusive_offers_desc')}</p>
                 </div>
                 <Link href="/products?showActiveOffer=true">
                   <Button variant="outline" className="text-destructive border-destructive/20 hover:bg-destructive/10 hover:text-destructive transition-all rounded-full px-8 h-12">
-                    مشاهدة جميع العروض
+                    {t('home_page.view_all_offers')}
                   </Button>
                 </Link>
               </div>
@@ -166,7 +166,7 @@ export default function Home() {
                         <Link href={`/products/${product._id}`} className="w-full">
                           <Button className="w-full bg-card text-card-foreground hover:bg-muted shadow-md border border-border font-bold rounded-xl h-10">
                             <Search className="w-4 h-4 mr-2" />
-                            تفاصيل
+                            {t('product.details')}
                           </Button>
                         </Link>
                       </div>
@@ -198,7 +198,7 @@ export default function Home() {
                       {/* Stock Progress Bar (Fake or Real) */}
                       <div className="mt-auto pt-4 border-t border-border">
                         <div className="flex justify-between text-xs font-semibold mb-1.5">
-                          <span className="text-destructive">🔥 أوشك على الانتهاء</span>
+                          <span className="text-destructive">🔥 {t('product.almost_gone')}</span>
                           <span className="text-muted-foreground">{t('product.only_left_1', 'باقي')} {product.stock || 5}</span>
                         </div>
                         <div className="w-full h-2 bg-muted rounded-full overflow-hidden">
@@ -245,7 +245,7 @@ export default function Home() {
         {categories.length > 0 && (
           <section className="py-10 bg-card overflow-hidden transition-colors duration-300">
             <div className="container mx-auto px-4">
-              <h2 className="text-2xl md:text-3xl font-bold text-foreground mb-8 text-center">التصنيفات</h2>
+              <h2 className="text-2xl md:text-3xl font-bold text-foreground mb-8 text-center">{t('common.categories')}</h2>
 
               <div className="relative group/carousel max-w-[100vw] overflow-hidden" dir="ltr">
                 {/* Scroll controls - hidden by default, visible on hover if someone really wants to click, but mainly for visual balance */}

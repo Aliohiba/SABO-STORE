@@ -18,7 +18,7 @@ export default function MyOrders() {
         return "orders";
     };
 
-    const [activeTab, setActiveTab] = useState<"orders" | "profile" | "wallet">(getInitialTab());
+    const [activeTab, setActiveTab] = useState<"orders" | "profile" | "wallet" | "support">(getInitialTab());
     const [searchQuery, setSearchQuery] = useState("");
     const { data: customer, isLoading } = trpc.customer.me.useQuery();
     const { data: orders = [] } = trpc.orders.myOrders.useQuery();
@@ -30,6 +30,10 @@ export default function MyOrders() {
         enabled: activeTab === "wallet"
     });
     const transactions = transactionsData?.transactions || [];
+
+    const { data: mySupportMessages } = trpc.support.myMessages.useQuery(undefined, {
+        enabled: activeTab === "support"
+    });
 
     const logout = trpc.customer.logout.useMutation();
 
@@ -99,6 +103,15 @@ export default function MyOrders() {
                                 }`}
                         >
                             {t('my_orders.title_profile')}
+                        </button>
+                        <button
+                            onClick={() => setActiveTab("support")}
+                            className={`pb-3 px-4 font-medium transition-colors ${activeTab === "support"
+                                ? "text-primary border-b-2 border-primary"
+                                : "text-muted-foreground hover:text-foreground"
+                                }`}
+                        >
+                            {t('support.tab_title', 'الدعم الفني')}
                         </button>
                     </div>
 
@@ -375,6 +388,69 @@ export default function MyOrders() {
                                     {t('my_orders.logout')}
                                 </Button>
                             </div>
+                        </div>
+                    )}
+
+                    {/* Support Tab */}
+                    {activeTab === "support" && (
+                        <div className="space-y-6 animate-in fade-in duration-300">
+                            <div className="flex justify-between items-center mb-4">
+                                <h2 className="text-xl font-bold text-card-foreground">{t('support.my_messages', 'رسائلي')}</h2>
+                            </div>
+
+                            {!mySupportMessages || mySupportMessages.length === 0 ? (
+                                <div className="text-center py-12 text-muted-foreground border rounded-lg bg-muted/20">
+                                    <p>{t('support.no_messages', 'لا توجد رسائل دعم فني سابقة.')}</p>
+                                    <p className="text-sm mt-2 text-muted-foreground/80">{t('support.send_hint', 'يمكنك إرسال رسالة جديدة عبر الرابط في أسفل الموقع.')}</p>
+                                </div>
+                            ) : (
+                                <div className="space-y-4">
+                                    {mySupportMessages.map((msg: any) => (
+                                        <div key={msg._id} className="border border-border rounded-lg p-4 bg-card hover:shadow-sm transition-shadow">
+                                            <div className="flex justify-between items-start mb-2">
+                                                <div>
+                                                    <h3 className="font-semibold text-lg">{msg.subject}</h3>
+                                                    <span className="text-xs text-muted-foreground">
+                                                        {new Date(msg.createdAt).toLocaleDateString((i18n.language === 'ar' ? 'ar-LY' : 'en-US'), {
+                                                            year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit'
+                                                        })}
+                                                    </span>
+                                                </div>
+                                                <span className={`px-2 py-1 rounded text-xs font-medium ${msg.direction === 'outbound'
+                                                        ? 'bg-blue-100 text-blue-700 border border-blue-200'
+                                                        : msg.status === 'replied'
+                                                            ? 'bg-green-100 text-green-700 border border-green-200'
+                                                            : 'bg-yellow-100 text-yellow-700 border border-yellow-200'
+                                                    }`}>
+                                                    {msg.direction === 'outbound'
+                                                        ? t('support.status_from_support', 'من الدعم')
+                                                        : msg.status === 'replied'
+                                                            ? t('support.status_replied', 'تم الرد')
+                                                            : t('support.status_pending', 'قيد الانتظار')}
+                                                </span>
+                                            </div>
+
+                                            <div className="bg-muted/30 p-3 rounded-md mt-2 text-sm text-foreground/90 whitespace-pre-wrap">
+                                                {msg.message}
+                                            </div>
+
+                                            {msg.reply && (
+                                                <div className="mt-4 border-t pt-4 bg-primary/5 -mx-4 -mb-4 px-4 pb-4 rounded-b-lg">
+                                                    <div className="flex items-center gap-2 mb-2">
+                                                        <span className="font-semibold text-primary">{t('support.admin_reply', 'رد الإدارة:')}</span>
+                                                        <span className="text-xs text-muted-foreground">
+                                                            {msg.repliedAt && new Date(msg.repliedAt).toLocaleDateString((i18n.language === 'ar' ? 'ar-LY' : 'en-US'))}
+                                                        </span>
+                                                    </div>
+                                                    <p className="text-sm text-foreground/90 whitespace-pre-wrap leading-relaxed">
+                                                        {msg.reply}
+                                                    </p>
+                                                </div>
+                                            )}
+                                        </div>
+                                    ))}
+                                </div>
+                            )}
                         </div>
                     )}
                 </div>

@@ -18,7 +18,10 @@ import {
   IWalletTransaction,
   Wallet,
   WalletTransaction,
-  Customer
+  Customer,
+  SupportMessage,
+  ISupportMessage,
+  ICustomer
 } from "./schemas";
 
 // Admin functions
@@ -434,6 +437,11 @@ export async function getDetailedSalesReport(startDate: Date, endDate: Date) {
   return { items: reportItems, summary };
 }
 
+export async function getCustomerById(id: string): Promise<ICustomer | null> {
+  if (!mongoose.Types.ObjectId.isValid(id)) return null;
+  return Customer.findById(id).exec();
+}
+
 // Order Item functions
 export async function createOrderItem(itemData: Partial<IOrderItem>): Promise<IOrderItem> {
   const item = new OrderItem(itemData);
@@ -543,4 +551,40 @@ export async function updateOrderPaymentStatus(orderId: string, isPaid: boolean,
     return Order.findByIdAndUpdate(orderId, updateData, { new: true });
   }
   return Order.findOneAndUpdate({ orderNumber: orderId }, updateData, { new: true });
+}
+
+// ==================== Support Message Functions ====================
+export async function createSupportMessage(messageData: Partial<ISupportMessage>): Promise<ISupportMessage> {
+  const message = new SupportMessage(messageData);
+  return message.save();
+}
+
+export async function getAllSupportMessages(): Promise<ISupportMessage[]> {
+  return SupportMessage.find().sort({ createdAt: -1 }).exec();
+}
+
+export async function getSupportMessageById(id: string): Promise<ISupportMessage | null> {
+  return SupportMessage.findById(id).exec();
+}
+
+export async function getSupportMessagesForUser(email?: string, customerId?: string): Promise<ISupportMessage[]> {
+  const query: any = { $or: [] };
+
+  if (email) {
+    query.$or.push({ email });
+  }
+
+  if (customerId && mongoose.Types.ObjectId.isValid(customerId)) {
+    query.$or.push({ customerId: new mongoose.Types.ObjectId(customerId) });
+  }
+
+  if (query.$or.length === 0) {
+    return [];
+  }
+
+  return SupportMessage.find(query).sort({ createdAt: -1 }).exec();
+}
+
+export async function updateSupportMessage(id: string, updateData: Partial<ISupportMessage>): Promise<ISupportMessage | null> {
+  return SupportMessage.findByIdAndUpdate(id, updateData, { new: true }).exec();
 }

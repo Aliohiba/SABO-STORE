@@ -14,6 +14,7 @@ export default function LanguageSwitcher() {
         i18n.changeLanguage(lng);
         document.documentElement.dir = "rtl";
         document.documentElement.lang = lng;
+        localStorage.setItem('i18nextLng', lng);
     };
 
     const LibyaFlag = () => (

@@ -1,4 +1,5 @@
 import { useParams } from "wouter";
+import { useTranslation } from "react-i18next";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Link } from "wouter";
@@ -8,6 +9,7 @@ import { Badge } from "@/components/ui/badge";
 import CustomerNavbar from "@/components/CustomerNavbar";
 
 export default function OrderTracking() {
+  const { t } = useTranslation();
   const params = useParams<{ key?: string }>();
   const trackingKey = params.key || "";
   const [searchKey, setSearchKey] = useState(trackingKey);
@@ -54,16 +56,16 @@ export default function OrderTracking() {
 
   const getStatusText = (status: string) => {
     const statusMap: Record<string, string> = {
-      pending: "قيد الانتظار",
-      confirmed: "مؤكد",
-      shipped: "مشحون (في الطريق)",
-      delivered: "تم التسليم",
-      cancelled: "ملغى",
+      pending: t('tracking.pending'),
+      confirmed: t('tracking.confirmed'),
+      shipped: t('tracking.status_shipped'),
+      delivered: t('tracking.status_delivered'),
+      cancelled: t('tracking.status_cancelled'),
       // Vanex Statuses
-      store_new: "تم استلام الطلب",
-      received: "في المخزن",
-      in_transit: "جاري التوصيل",
-      returned: "راجعة",
+      store_new: t('tracking.status_received'),
+      received: t('tracking.status_in_store'),
+      in_transit: t('tracking.status_in_transit'),
+      returned: t('tracking.status_returned'),
     };
     return statusMap[status] || status;
   };
@@ -77,8 +79,8 @@ export default function OrderTracking() {
           <div className="max-w-md mx-auto">
             <div className="text-center mb-8">
               <Package className="h-16 w-16 mx-auto text-primary mb-4" />
-              <h1 className="text-3xl font-bold mb-2">تتبع طلبك</h1>
-              <p className="text-muted-foreground">أدخل رمز التتبع الخاص بطلبك</p>
+              <h1 className="text-3xl font-bold mb-2">{t('tracking.track_your_order')}</h1>
+              <p className="text-muted-foreground">{t('tracking.enter_code_desc')}</p>
             </div>
             <form onSubmit={handleSearch} className="space-y-4">
               <div>
@@ -92,7 +94,7 @@ export default function OrderTracking() {
                 />
               </div>
               <Button type="submit" className="w-full">
-                تتبع الطلب
+                {t('tracking.track_btn')}
               </Button>
             </form>
           </div>
@@ -107,7 +109,7 @@ export default function OrderTracking() {
         <CustomerNavbar showSearch={false} />
         <div className="text-center py-12">
           <div className="animate-spin h-8 w-8 border-4 border-primary border-t-transparent rounded-full mx-auto mb-4"></div>
-          جاري التحميل...
+          {t('tracking.loading')}
         </div>
       </div>
     );
@@ -120,8 +122,8 @@ export default function OrderTracking() {
         <div className="container mx-auto px-4 py-12">
           <div className="max-w-md mx-auto text-center">
             <div className="bg-red-50 border border-red-200 rounded-lg p-6 mb-6">
-              <h2 className="text-xl font-bold text-red-800 mb-2">الطلب غير موجود</h2>
-              <p className="text-red-600">لم نتمكن من العثور على طلب بهذا الرمز</p>
+              <h2 className="text-xl font-bold text-red-800 mb-2">{t('tracking.order_not_found')}</h2>
+              <p className="text-red-600">{t('tracking.code_not_found')}</p>
             </div>
             <form onSubmit={handleSearch} className="space-y-4">
               <input
@@ -132,7 +134,7 @@ export default function OrderTracking() {
                 className="w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary text-center text-lg font-mono"
               />
               <Button type="submit" className="w-full">
-                بحث مرة أخرى
+                {t('tracking.search_again')}
               </Button>
             </form>
             <Link href="/" className="block mt-4">
@@ -169,13 +171,13 @@ export default function OrderTracking() {
       <CustomerNavbar showSearch={false} />
 
       <div className="container mx-auto px-4 py-8 print:hidden">
-        <h1 className="text-3xl font-bold mb-8 text-foreground">تتبع الطلب</h1>
+        <h1 className="text-3xl font-bold mb-8 text-foreground">{t('tracking.track_your_order')}</h1>
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           {/* Order Status */}
           <div className="lg:col-span-2">
             <div className="bg-card rounded-lg p-6 mb-6 border border-border shadow-sm">
-              <h2 className="text-xl font-bold mb-4 text-card-foreground">حالة الطلب</h2>
+              <h2 className="text-xl font-bold mb-4 text-card-foreground">{t('tracking.order_status')}</h2>
 
               <div className="bg-primary/5 rounded-lg p-6 mb-6 border border-primary/20">
                 <div className="flex items-center gap-4">
@@ -183,14 +185,14 @@ export default function OrderTracking() {
                     {getStatusIcon(order.status)}
                   </div>
                   <div className="flex-1">
-                    <p className="text-sm text-muted-foreground mb-1">الحالة الحالية</p>
+                    <p className="text-sm text-muted-foreground mb-1">{t('tracking.current_status')}</p>
                     <p className="text-3xl font-bold text-foreground">{getStatusText(order.status)}</p>
                     <p className="text-sm text-muted-foreground mt-2">
-                      رقم الطلب: <span className="font-semibold text-foreground">{order.orderNumber}</span>
+                      {t('confirmation.order_number')}: <span className="font-semibold text-foreground">{order.orderNumber}</span>
                     </p>
                     {trackingCode && (
                       <p className="text-sm text-primary mt-1">
-                        رقم التتبع: <span className="font-semibold">{trackingCode}</span>
+                        {t('tracking.tracking_number')}: <span className="font-semibold">{trackingCode}</span>
                       </p>
                     )}
                   </div>
@@ -199,12 +201,12 @@ export default function OrderTracking() {
 
               {/* Timeline */}
               <div className="space-y-4">
-                <h3 className="font-semibold text-muted-foreground mb-3">مراحل الطلب</h3>
+                <h3 className="font-semibold text-muted-foreground mb-3">{t('tracking.order_stages')}</h3>
                 {[
-                  { key: "pending", label: "تم استلام الطلب" },
-                  { key: "confirmed", label: "تم تأكيد الطلب" },
-                  { key: "shipped", label: "جاري الشحن" },
-                  { key: "delivered", label: "تم التسليم" }
+                  { key: "pending", label: t('tracking.status_received') },
+                  { key: "confirmed", label: t('tracking.status_confirmed') },
+                  { key: "shipped", label: t('tracking.status_shipped') },
+                  { key: "delivered", label: t('tracking.status_delivered') }
                 ].map((stage, idx) => {
                   const statusOrder = ["pending", "confirmed", "shipped", "delivered"];
                   const currentIndex = statusOrder.indexOf(order.status);
@@ -252,7 +254,7 @@ export default function OrderTracking() {
                         </p>
                         {isCurrent && (
                           <p className="text-sm text-muted-foreground mt-1">
-                            الحالة الحالية
+                            {t('tracking.current_status')}
                           </p>
                         )}
                       </div>
@@ -264,13 +266,13 @@ export default function OrderTracking() {
 
             {/* Order Items */}
             <div className="bg-card rounded-lg p-6 mb-6 border border-border shadow-sm">
-              <h2 className="text-xl font-bold mb-4 text-card-foreground">المنتجات</h2>
+              <h2 className="text-xl font-bold mb-4 text-card-foreground">{t('tracking.products')}</h2>
               <div className="space-y-4">
                 {(order as any).items?.map((item: any) => (
                   <div key={item.id || item._id} className="flex justify-between items-center py-2 border-b border-border last:border-0">
                     <div>
                       <p className="font-medium text-foreground">{item.productName}</p>
-                      <p className="text-sm text-muted-foreground">الكمية: {item.quantity}</p>
+                      <p className="text-sm text-muted-foreground">{t('tracking.quantity')} {item.quantity}</p>
                     </div>
                     <div className="text-left">
                       <p className="font-bold text-foreground">{item.price} د.ل</p>
@@ -282,34 +284,34 @@ export default function OrderTracking() {
 
             {/* Order Details */}
             <div className="bg-card rounded-lg p-6 border border-border shadow-sm">
-              <h2 className="text-xl font-bold mb-4 text-card-foreground">تفاصيل الشحن</h2>
+              <h2 className="text-xl font-bold mb-4 text-card-foreground">{t('tracking.shipping_details')}</h2>
 
               <div className="space-y-3 pb-4 border-b border-border mb-4">
                 <div className="flex justify-between">
-                  <span className="text-muted-foreground">رقم الطلب</span>
+                  <span className="text-muted-foreground">{t('confirmation.order_number')}</span>
                   <span className="font-bold text-foreground">{order.orderNumber}</span>
                 </div>
                 <div className="flex justify-between">
-                  <span className="text-muted-foreground">تاريخ الطلب</span>
+                  <span className="text-muted-foreground">{t('tracking.order_date')}</span>
                   <span className="font-bold text-foreground">{new Date(order.createdAt).toLocaleDateString("ar-LY")}</span>
                 </div>
                 <div className="flex justify-between items-center">
-                  <span className="text-muted-foreground">طريقة الدفع</span>
+                  <span className="text-muted-foreground">{t('tracking.payment_method')}</span>
                   <div className="flex flex-col items-end gap-1">
                     <span className="font-bold text-foreground">
-                      {order.paymentMethod === 'moamalat' ? 'بطاقة مصرفية (تداول)' :
-                        order.paymentMethod === 'lypay' ? (order.isPaid ? 'لي باي (تم الدفع)' : 'لي باي (في انتظار الدفع)') :
-                          'الدفع عند الاستلام'}
+                      {order.paymentMethod === 'moamalat' ? t('tracking.payment_moamalat') :
+                        order.paymentMethod === 'lypay' ? (order.isPaid ? t('tracking.payment_lypay_paid') : t('tracking.payment_lypay_pending')) :
+                          t('tracking.payment_cod')}
                     </span>
                     {(order as any).isPaid && (
                       <Badge className="bg-green-500/10 text-green-600 hover:bg-green-500/20 border-green-200 px-2 py-0.5 text-xs shadow-none whitespace-nowrap">
                         <CheckCircle className="w-3 h-3 fill-current ml-1" />
-                        تم الدفع
+                        {t('tracking.paid')}
                       </Badge>
                     )}
                     {order.paymentMethod === 'lypay' && !(order as any).isPaid && (
                       <Badge variant="outline" className="bg-yellow-500/10 text-yellow-600 border-yellow-200 px-2 py-0.5 text-xs whitespace-nowrap animate-pulse">
-                        في انتظار الدفع
+                        {t('tracking.waiting_payment')}
                       </Badge>
                     )}
                   </div>
@@ -338,7 +340,7 @@ export default function OrderTracking() {
                 */}
                 {trackingInfo?.data?.fees && (
                   <div className="flex justify-between text-muted-foreground">
-                    <span>مصاريف التوصيل (مقدرة)</span>
+                    <span>{t('tracking.estimated_shipping')}</span>
                     <span className="font-bold">{trackingInfo.data.fees.cost} د.ل</span>
                   </div>
                 )}
@@ -349,18 +351,18 @@ export default function OrderTracking() {
           {/* Order Summary */}
           <div className="lg:col-span-1">
             <div className="bg-card rounded-lg p-6 sticky top-4 border border-border shadow-sm">
-              <h2 className="font-bold text-lg mb-4 text-card-foreground">ملخص الطلب</h2>
+              <h2 className="font-bold text-lg mb-4 text-card-foreground">{t('tracking.order_summary')}</h2>
 
               <div className="space-y-3 mb-4 pb-4 border-b border-border">
                 <div className="flex justify-between">
-                  <span className="text-muted-foreground">المجموع</span>
+                  <span className="text-muted-foreground">{t('tracking.total')}</span>
                   <span className="font-bold text-foreground">{Number(order.totalAmount).toFixed(2)} د.ل</span>
                 </div>
               </div>
 
               <Link href="/">
                 <Button className="w-full bg-primary hover:bg-primary/90 text-primary-foreground shadow-sm">
-                  العودة للرئيسية
+                  {t('confirmation.back_to_home')}
                 </Button>
               </Link>
             </div>

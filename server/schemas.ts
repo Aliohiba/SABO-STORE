@@ -361,6 +361,24 @@ const WalletTransactionSchema = new mongoose.Schema({
 
 export const WalletTransaction = mongoose.model<IWalletTransaction>('WalletTransaction', WalletTransactionSchema);
 
+// Exchange Rate Cache Schema
+export interface IExchangeRateCache extends Document {
+  key: string; // usually 'default' or currency pair
+  data: any;
+  lastUpdated: Date;
+  createdAt: Date;
+  updatedAt: Date;
+}
+
+const ExchangeRateCacheSchema = new mongoose.Schema({
+  key: { type: String, default: 'default', unique: true },
+  data: { type: mongoose.Schema.Types.Mixed },
+  lastUpdated: { type: Date, default: Date.now }
+}, { timestamps: true });
+
+export const ExchangeRateCache = mongoose.models.ExchangeRateCache || mongoose.model<IExchangeRateCache>('ExchangeRateCache', ExchangeRateCacheSchema);
+
+
 // Store Settings Schema
 const StoreSettingsSchema = new mongoose.Schema({
   storeName: { type: String, default: "Sabo Store" },
@@ -542,3 +560,35 @@ export interface IStoreSettings extends Document {
 }
 
 export const StoreSettings = mongoose.models.StoreSettings || mongoose.model<IStoreSettings>('StoreSettings', StoreSettingsSchema);
+
+// Support Message Schema
+export interface ISupportMessage extends Document {
+  customerId?: mongoose.Types.ObjectId;
+  name: string;
+  email: string;
+  subject: string;
+  message: string;
+  status: "pending" | "replied";
+  reply?: string;
+  direction?: "inbound" | "outbound";
+  createdAt: Date;
+  updatedAt: Date;
+  repliedAt?: Date;
+}
+
+const supportMessageSchema = new Schema<ISupportMessage>(
+  {
+    customerId: { type: Schema.Types.ObjectId, ref: 'Customer' },
+    name: { type: String, required: true },
+    email: { type: String, required: true, index: true },
+    subject: { type: String, required: true },
+    message: { type: String, required: true },
+    status: { type: String, enum: ["pending", "replied"], default: "pending" },
+    reply: String,
+    direction: { type: String, enum: ["inbound", "outbound"], default: "inbound" },
+    repliedAt: Date,
+  },
+  { timestamps: true }
+);
+
+export const SupportMessage = mongoose.models.SupportMessage || mongoose.model<ISupportMessage>("SupportMessage", supportMessageSchema);

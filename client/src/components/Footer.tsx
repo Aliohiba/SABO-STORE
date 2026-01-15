@@ -2,6 +2,8 @@ import { trpc } from "@/lib/trpc";
 import { Link } from "wouter";
 import SocialMediaLinks from "./SocialMediaLinks";
 import { useTranslation } from "react-i18next";
+import { useState } from "react";
+import { SupportDialog } from "./SupportDialog";
 import {
     Tooltip,
     TooltipContent,
@@ -12,6 +14,7 @@ import {
 export default function Footer() {
     const { t } = useTranslation();
     const { data: settings } = trpc.storeSettings.get.useQuery();
+    const [isSupportOpen, setIsSupportOpen] = useState(false);
 
     const currentYear = new Date().getFullYear();
     const defaultCopyright = `© ${currentYear} ${settings?.storeName || 'SABO STORE'}. ${t('footer.all_rights_reserved')}`;
@@ -82,10 +85,15 @@ export default function Footer() {
                         <h4 className="font-bold text-lg mb-6 text-foreground">{t('footer.contact')}</h4>
                         <ul className="text-muted-foreground text-sm space-y-4">
                             <li className="flex items-start gap-3">
-                                <svg className="w-5 h-5 text-primary mt-0.5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
-                                </svg>
-                                <span>{settings?.footer?.email || "info@sabostore.com"}</span>
+                                <button
+                                    onClick={() => setIsSupportOpen(true)}
+                                    className="flex items-start gap-3 hover:text-primary transition-colors text-left"
+                                >
+                                    <svg className="w-5 h-5 text-primary mt-0.5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                                    </svg>
+                                    <span>{settings?.footer?.email || "info@sabostore.com"}</span>
+                                </button>
                             </li>
                             <li className="flex items-start gap-3">
                                 <svg className="w-5 h-5 text-primary mt-0.5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -186,6 +194,12 @@ export default function Footer() {
                     </div>
                 </div>
             </div>
+
+            <SupportDialog
+                open={isSupportOpen}
+                onOpenChange={setIsSupportOpen}
+                defaultEmail={settings?.footer?.email}
+            />
         </footer>
     );
 }
