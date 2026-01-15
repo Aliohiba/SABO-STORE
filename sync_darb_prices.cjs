@@ -8,7 +8,7 @@
 const mongoose = require('mongoose');
 require('dotenv').config();
 
-const MONGODB_URI = process.env.MONGODB_URI || 'mongodb://localhost:27017/online_store';
+const MONGODB_URI = process.env.MONGODB_URI || 'mongodb+srv://aliohiba7:Ali15101996ohiba@sabo.x3bbofa.mongodb.net/?appName=SABO';
 
 // Darb Sabil prices (copied from server/services/darb_sabil.ts)
 const CITY_AREAS = {

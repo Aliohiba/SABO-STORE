@@ -71,7 +71,7 @@
 ### الخادم الحالي:
 ```
 ✅ يعمل على: http://172.22.11.189:5000
-✅ قاعدة البيانات: mongodb://localhost:27017/online_store
+✅ قاعدة البيانات: mongodb+srv://aliohiba7:Ali15101996ohiba@sabo.x3bbofa.mongodb.net/?appName=SABO
 ✅ الحالة: RUNNING
 ```
 

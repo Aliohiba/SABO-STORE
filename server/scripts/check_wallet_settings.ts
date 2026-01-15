@@ -4,7 +4,7 @@ import { StoreSettings } from '../schemas';
 import dotenv from 'dotenv';
 dotenv.config();
 
-const MONGO_URI = process.env.MONGO_URI || "mongodb://localhost:27017/online_store";
+const MONGO_URI = process.env.MONGO_URI || "mongodb+srv://aliohiba7:Ali15101996ohiba@sabo.x3bbofa.mongodb.net/?appName=SABO";
 
 async function checkSettings() {
     await mongoose.connect(MONGO_URI);

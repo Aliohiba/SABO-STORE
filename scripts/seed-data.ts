@@ -5,7 +5,7 @@ import { City, DeliveryCompany, ProductOption } from "../server/schemas-extended
 
 async function seedData() {
   try {
-    const mongoUri = process.env.MONGODB_URI || "mongodb://localhost:27017/online_store";
+    const mongoUri = process.env.MONGODB_URI || "mongodb+srv://aliohiba7:Ali15101996ohiba@sabo.x3bbofa.mongodb.net/?appName=SABO";
     console.log("[Seed] جاري الاتصال بـ MongoDB:", mongoUri);
     await mongoose.connect(mongoUri);
     console.log("[Seed] ✅ تم الاتصال بـ MongoDB بنجاح");

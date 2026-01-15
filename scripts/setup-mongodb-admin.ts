@@ -5,7 +5,7 @@ import { AdminUser } from "../server/schemas";
 
 async function setupAdmin() {
   try {
-    const mongoUri = process.env.MONGODB_URI || "mongodb://localhost:27017/online_store";
+    const mongoUri = process.env.MONGODB_URI || "mongodb+srv://aliohiba7:Ali15101996ohiba@sabo.x3bbofa.mongodb.net/?appName=SABO";
 
     console.log("[Setup] جاري الاتصال بـ MongoDB:", mongoUri);
     await mongoose.connect(mongoUri);
