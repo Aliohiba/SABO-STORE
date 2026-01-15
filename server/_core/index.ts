@@ -7,8 +7,10 @@ import { registerOAuthRoutes } from "./oauth";
 import { appRouter } from "../routers";
 import { createContext } from "./context";
 import { serveStatic, setupVite } from "./vite";
+import { connectMongoDB } from "../mongodb";
 
 async function startServer() {
+  await connectMongoDB();
   const app = express();
   const server = createServer(app);
 
