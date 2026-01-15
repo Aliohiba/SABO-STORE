@@ -9,7 +9,7 @@ export async function connectMongoDB() {
   }
   //vhgvhvh
   try {
-    const mongoUri = process.env.MONGODB_URI || "mongodb+srv://aliohiba7:Ali15101996ohiba@sabo.x3bbofa.mongodb.net/?appName=SABO";
+    const mongoUri = process.env.MONGODB_URI || "mongodb://localhost:27017/online_store";
 
     await mongoose.connect(mongoUri, {
       retryWrites: true,
